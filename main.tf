@@ -23,6 +23,14 @@ resource "google_storage_bucket_object" "index" {
   content_type = "text/html"
 }
 
+# Upload the resume.html file to the bucket
+resource "google_storage_bucket_object" "resume" {
+  name         = "resume.html"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/resume.html"
+  content_type = "text/html"
+}
+
 # Make the bucket publicly readable
 resource "google_storage_bucket_iam_member" "public_read" {
   bucket = google_storage_bucket.website.name

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lee Dulcio — Resume</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0f0f0f;
+      font-family: 'Segoe UI', sans-serif;
+      color: #ccc;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 50px 60px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .header h1 {
+      color: #fff;
+      font-size: 2.6rem;
+      letter-spacing: 3px;
+    }
+
+    .header h2 {
+      color: #4f8ef7;
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 2px;
+      margin-top: 6px;
+    }
+
+    .contact {
+      margin-top: 12px;
+      font-size: 0.88rem;
+      color: #888;
+    }
+
+    .contact a {
+      color: #888;
+      text-decoration: none;
+    }
+
+    .contact a:hover {
+      color: #4f8ef7;
+    }
+
+    .contact span {
+      margin: 0 8px;
+    }
+
+    /* Divider */
+    .divider {
+      width: 60px;
+      height: 3px;
+      background: #4f8ef7;
+      margin: 20px auto;
+      border-radius: 2px;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 36px;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #4f8ef7;
+      border-bottom: 1px solid #2a2a2a;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      line-height: 1.75;
+      font-size: 0.93rem;
+    }
+
+    /* Job entry */
+    .job {
+      margin-bottom: 24px;
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .job-title {
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .job-date {
+      font-size: 0.85rem;
+      color: #888;
+      white-space: nowrap;
+    }
+
+    .job-company {
+      font-style: italic;
+      color: #4f8ef7;
+      font-size: 0.88rem;
+      margin-bottom: 10px;
+    }
+
+    .job ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .job ul li {
+      font-size: 0.9rem;
+      padding: 3px 0 3px 16px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .job ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: #4f8ef7;
+    }
+
+    /* Education */
+    .edu-item {
+      font-size: 0.92rem;
+      color: #ddd;
+      padding: 4px 0;
+      font-weight: 600;
+    }
+
+    /* Certifications */
+    .certs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .cert-badge {
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      color: #ccc;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    /* Skills */
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .skill {
+      background: #242424;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      color: #aaa;
+    }
+
+    /* Back link */
+    .back {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .back a {
+      color: #4f8ef7;
+      text-decoration: none;
+      font-size: 0.88rem;
+      letter-spacing: 1px;
+    }
+
+    .back a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back">
+    <a href="index.html">← Back to Home</a>
+  </div>
+
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <h1>LEE DULCIO</h1>
+      <h2>DevSecOps Engineer</h2>
+      <div class="divider"></div>
+      <div class="contact">
+        Tampa, USA
+        <span>•</span>
+        <a href="mailto:leedulcio@gorillac.net">leedulcio@gorillac.net</a>
+        <span>•</span>
+        (813) 483-9415
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="section">
+      <div class="section-title">Professional Summary</div>
+      <p>DevSecOps Engineer with 10+ years securing cloud-native applications across Azure, AWS, and GCP environments supporting government and enterprise workloads. Experienced integrating automated security scanning into CI/CD pipelines, enforcing OWASP-aligned secure coding practices, and strengthening deployment integrity across distributed infrastructure environments. Proven record reducing vulnerabilities, improving remediation timelines, and delivering secure backend architectures supporting thousands of users.</p>
+    </div>
+
+    <!-- Employment -->
+    <div class="section">
+      <div class="section-title">Employment History</div>
+
+      <div class="job">
+        <div class="job-header">
+          <span class="job-title">DevSecOps Engineer / Senior Programmer Analyst</span>
+          <span class="job-date">2024 – Present</span>
+        </div>
+        <div class="job-company">Pasco County BOCC — Tampa, FL</div>
+        <ul>
+          <li>Architected secure enterprise applications supporting county-wide infrastructure serving 5,000+ users</li>
+          <li>Implemented JWT authentication and RBAC controls reducing unauthorized access exposure risk by 35%</li>
+          <li>Designed reusable REST service layers reducing development lifecycle timelines 25–30%</li>
+          <li>Optimized SQL Server performance improving reporting responsiveness by 30%+</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <span class="job-title">Cloud Security Engineer / Cybersecurity Engineer</span>
+          <span class="job-date">2023 – 2024</span>
+        </div>
+        <div class="job-company">Hillsborough County BOCC — Tampa, FL</div>
+        <ul>
+          <li>Engineered secure workloads across Azure and GCP environments supporting enterprise compliance deployments</li>
+          <li>Conducted penetration testing and vulnerability assessments reducing high-risk security findings</li>
+          <li>Reduced OWASP Top 10 exposure risks through secure coding enforcement across application environments</li>
+          <li>Integrated automated security scanning pipelines reducing manual detection effort by 20%+</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <span class="job-title">Security Support Engineer (Cloud & Application Security)</span>
+          <span class="job-date">2022 – 2023</span>
+        </div>
+        <div class="job-company">Rapid7 — Tampa, FL</div>
+        <ul>
+          <li>Partnered with engineering teams to remediate backend vulnerabilities across .NET and Python environments</li>
+          <li>Supported deployment of security monitoring solutions across hybrid infrastructure environments</li>
+          <li>Reduced vulnerability resolution timelines by 20%+ through structured remediation workflows</li>
+          <li>Strengthened secure architecture alignment across enterprise deployments</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <span class="job-title">Infrastructure & Security Support Engineer</span>
+          <span class="job-date">2018 – 2021</span>
+        </div>
+        <div class="job-company">Florida Department of Health — Tampa, FL</div>
+        <ul>
+          <li>Maintained mission-critical healthcare infrastructure supporting HIPAA-aligned secure environments</li>
+          <li>Implemented firewall policies, VLAN segmentation, and routing reducing network attack surface exposure</li>
+          <li>Optimized SQL Server environments improving system stability and performance</li>
+          <li>Supported endpoint hardening and patch governance improving compliance posture</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div class="section">
+      <div class="section-title">Education</div>
+      <div class="edu-item">B.S. Cybersecurity</div>
+      <div class="edu-item">A.S. Computer Programming & Database Management</div>
+      <div class="edu-item">A.S. Network Administration</div>
+    </div>
+
+    <!-- Certifications -->
+    <div class="section">
+      <div class="section-title">Certifications</div>
+      <div class="certs">
+        <span class="cert-badge">SSCP</span>
+        <span class="cert-badge">CySA+</span>
+        <span class="cert-badge">Security+</span>
+        <span class="cert-badge">PenTest+</span>
+        <span class="cert-badge">PCAP</span>
+        <span class="cert-badge">ITIL V4</span>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="section">
+      <div class="section-title">Skills</div>
+      <div class="skills">
+        <span class="skill">CI/CD Pipeline Security</span>
+        <span class="skill">Cloud Security Engineering</span>
+        <span class="skill">OWASP Secure Coding</span>
+        <span class="skill">Vulnerability Management Automation</span>
+        <span class="skill">SAST / DAST Integration</span>
+        <span class="skill">Secure API Design</span>
+        <span class="skill">RBAC / IAM Controls</span>
+        <span class="skill">Infrastructure Hardening</span>
+        <span class="skill">Secrets Management</span>
+        <span class="skill">Compliance Alignment</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

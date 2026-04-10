@@ -65,14 +65,33 @@
     .icons a.facebook:hover { color: #1877f2; }
     .icons a.instagram:hover { color: #e1306c; }
     .icons a.linkedin:hover  { color: #0a66c2; }
-  </style>
+
+    .resume-link {
+      display: inline-block;
+      margin-bottom: 28px;
+      padding: 8px 24px;
+      border: 1px solid #4f8ef7;
+      border-radius: 6px;
+      color: #4f8ef7;
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .resume-link:hover {
+      background: #4f8ef7;
+      color: #0f0f0f;
+    }
+</style>
 </head>
 <body>
   <div class="card">
     <h1>Lee Dulcio</h1>
     <div class="divider"></div>
+    <a href="resume.html" class="resume-link">View Resume</a>
     <div class="icons">
-      <a href="#" class="github" aria-label="GitHub">
+      <a href="https://github.com/guru2linux/vuln-analysis-blog" target="_blank" class="github" aria-label="GitHub">
         <i class="fab fa-github"></i>
       </a>
       <a href="#" class="facebook" aria-label="Facebook">
@@ -81,7 +100,7 @@
       <a href="#" class="instagram" aria-label="Instagram">
         <i class="fab fa-instagram"></i>
       </a>
-      <a href="#" class="linkedin" aria-label="LinkedIn">
+      <a href="https://www.linkedin.com/in/leedulcio" target="_blank" class="linkedin" aria-label="LinkedIn">
         <i class="fab fa-linkedin"></i>
       </a>
     </div>
