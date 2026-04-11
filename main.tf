@@ -31,6 +31,22 @@ resource "google_storage_bucket_object" "resume" {
   content_type = "text/html"
 }
 
+# Upload the portfolio page
+resource "google_storage_bucket_object" "portfolio" {
+  name         = "portfolio.html"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/portfolio.html"
+  content_type = "text/html"
+}
+
+# Upload the portfolio data file
+resource "google_storage_bucket_object" "projects_data" {
+  name         = "projects.json"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/projects.json"
+  content_type = "application/json"
+}
+
 # Make the bucket publicly readable
 resource "google_storage_bucket_iam_member" "public_read" {
   bucket = google_storage_bucket.website.name
@@ -54,6 +70,21 @@ resource "google_compute_backend_bucket" "website" {
 resource "google_compute_url_map" "website" {
   name            = "gorillac-site-url-map"
   default_service = google_compute_backend_bucket.website.self_link
+
+  host_rule {
+    hosts        = ["gorillac.net", "www.gorillac.net"]
+    path_matcher = "all"
+  }
+
+  path_matcher {
+    name            = "all"
+    default_service = google_compute_backend_bucket.website.self_link
+
+    path_rule {
+      paths   = ["/api/contact", "/api/contact/*"]
+      service = google_compute_backend_service.api.self_link
+    }
+  }
 }
 
 # URL map for HTTP -> HTTPS redirect

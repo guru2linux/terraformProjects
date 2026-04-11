@@ -1,0 +1,70 @@
+{
+  "projects": [
+    {
+      "title": "Cloud-Hosted Portfolio Site (gorillac.net)",
+      "description": "Designed and deployed a personal portfolio site on Google Cloud Storage with Cloud CDN, HTTPS via managed SSL, and HTTP-to-HTTPS redirect. Infrastructure fully defined as code using Terraform.",
+      "role": "Sole Architect & Engineer",
+      "tools": ["Terraform", "GCP", "Cloud Storage", "Cloud CDN", "Cloud Load Balancing", "Managed SSL"],
+      "outcome": "Live production site at gorillac.net with sub-second global load times via CDN edge caching.",
+      "link": "https://gorillac.net"
+    },
+    {
+      "title": "Enterprise Application Security — Pasco County BOCC",
+      "description": "Architected secure enterprise web applications serving 5,000+ county users. Implemented JWT-based authentication and role-based access control (RBAC) to harden application perimeter.",
+      "role": "DevSecOps Engineer / Senior Programmer Analyst",
+      "tools": ["JWT", "RBAC", "REST APIs", "SQL Server", "Azure", ".NET"],
+      "outcome": "35% reduction in unauthorized access exposure risk; 25–30% decrease in development lifecycle timelines.",
+      "link": ""
+    },
+    {
+      "title": "Cloud Security & Compliance Engineering — Hillsborough County BOCC",
+      "description": "Engineered secure workloads across Azure and GCP environments. Conducted penetration testing and vulnerability assessments. Integrated automated SAST/DAST scanning into CI/CD pipelines.",
+      "role": "Cloud Security Engineer / Cybersecurity Engineer",
+      "tools": ["Azure", "GCP", "Penetration Testing", "SAST", "DAST", "CI/CD", "OWASP"],
+      "outcome": "20%+ reduction in manual detection effort; measurable decrease in OWASP Top 10 exposure across application environments.",
+      "link": ""
+    },
+    {
+      "title": "Vulnerability Remediation Workflows — Rapid7",
+      "description": "Partnered with engineering teams to remediate backend vulnerabilities across .NET and Python environments. Designed structured remediation workflows and supported deployment of security monitoring across hybrid infrastructure.",
+      "role": "Security Support Engineer",
+      "tools": ["Rapid7 InsightVM", ".NET", "Python", "Hybrid Cloud", "Security Monitoring"],
+      "outcome": "20%+ reduction in vulnerability resolution timelines through workflow standardization.",
+      "link": ""
+    },
+    {
+      "title": "Healthcare Infrastructure Hardening — Florida Dept. of Health",
+      "description": "Maintained HIPAA-aligned critical infrastructure. Implemented firewall policies, VLAN segmentation, and endpoint hardening. Managed patch governance and SQL Server optimization.",
+      "role": "Infrastructure & Security Support Engineer",
+      "tools": ["Firewall Management", "VLAN Segmentation", "SQL Server", "Endpoint Hardening", "HIPAA", "Patch Management"],
+      "outcome": "Improved network security posture and system stability across mission-critical healthcare environments.",
+      "link": ""
+    }
+  ],
+  "tools": [
+    {
+      "category": "Cloud Platforms",
+      "items": ["GCP", "Azure", "AWS"]
+    },
+    {
+      "category": "Infrastructure as Code",
+      "items": ["Terraform", "Ansible"]
+    },
+    {
+      "category": "DevSecOps & CI/CD",
+      "items": ["GitHub Actions", "Jenkins", "SAST", "DAST", "Secrets Management", "Container Security"]
+    },
+    {
+      "category": "Security & Compliance",
+      "items": ["Penetration Testing", "OWASP", "RBAC / IAM", "HIPAA", "Vulnerability Management", "Rapid7 InsightVM", "SIEM"]
+    },
+    {
+      "category": "Application & Backend",
+      "items": ["REST APIs", "JWT / OAuth2", ".NET", "Python", "SQL Server", "Bash / Shell Scripting"]
+    },
+    {
+      "category": "Networking",
+      "items": ["Firewall Policy", "VLAN Segmentation", "Load Balancing", "CDN", "Zero Trust Networking"]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+functions-framework==3.*
+cloud-sql-python-connector[pymysql]==1.*
+sqlalchemy==2.*
+pymysql==1.*
+sendgrid==6.*

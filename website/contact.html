@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lee Dulcio — Contact</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0f0f0f;
+      font-family: 'Segoe UI', sans-serif;
+      color: #ccc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .back {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+    }
+
+    .back a {
+      color: #4f8ef7;
+      text-decoration: none;
+      font-size: 0.88rem;
+      letter-spacing: 1px;
+    }
+
+    .back a:hover { text-decoration: underline; }
+
+    .card {
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 50px 56px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 1.9rem;
+      letter-spacing: 3px;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: #4f8ef7;
+      border-radius: 2px;
+      margin: 14px auto 10px;
+    }
+
+    .guest-count {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #555;
+      letter-spacing: 1px;
+      margin-bottom: 36px;
+      min-height: 18px;
+    }
+
+    .guest-count span {
+      color: #4f8ef7;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #4f8ef7;
+      margin-bottom: 6px;
+      margin-top: 20px;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #ddd;
+      font-family: inherit;
+      font-size: 0.92rem;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #4f8ef7;
+    }
+
+    textarea { min-height: 120px; }
+
+    button {
+      margin-top: 28px;
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid #4f8ef7;
+      border-radius: 6px;
+      color: #4f8ef7;
+      font-size: 0.85rem;
+      font-family: inherit;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #4f8ef7;
+      color: #0f0f0f;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .feedback {
+      margin-top: 18px;
+      font-size: 0.85rem;
+      text-align: center;
+      min-height: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .feedback.success { color: #4caf7d; }
+    .feedback.error   { color: #e05a5a; }
+  </style>
+</head>
+<body>
+
+  <div class="back">
+    <a href="index.html">← Home</a>
+  </div>
+
+  <div class="card">
+    <h1>CONTACT</h1>
+    <div class="divider"></div>
+    <div class="guest-count" id="guest-count">&nbsp;</div>
+
+    <form id="contact-form" novalidate>
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Your name" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="your@email.com" required />
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" placeholder="How can I help?" required></textarea>
+
+      <button type="submit" id="submit-btn">Send Message</button>
+    </form>
+
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <script>
+    const API = '/api/contact';
+
+    function parseJSON(text) {
+      if (!text || !text.trim()) throw new Error('Empty response from server.');
+      return JSON.parse(text);
+    }
+
+    function setCount(n) {
+      const el = document.getElementById('guest-count');
+      if (n > 0) {
+        el.innerHTML = `<span>${n}</span> ${n === 1 ? 'person has' : 'people have'} reached out`;
+      } else {
+        el.textContent = 'Be the first to reach out';
+      }
+    }
+
+    // Load guest count on page load — silent on failure
+    fetch(API)
+      .then(r => r.text())
+      .then(text => { setCount(parseJSON(text).count || 0); })
+      .catch(() => { setCount(0); });
+
+    // Form submit
+    document.getElementById('contact-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name    = document.getElementById('name').value.trim();
+      const email   = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const btn     = document.getElementById('submit-btn');
+      const fb      = document.getElementById('feedback');
+
+      fb.className = 'feedback';
+      fb.textContent = '';
+
+      if (!name || !email || !message) {
+        fb.className = 'feedback error';
+        fb.textContent = 'Please fill out all fields.';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, message }),
+      })
+        .then(r => r.text().then(text => ({ status: r.status, text })))
+        .then(({ status, text }) => {
+          const data = parseJSON(text);
+          if (data.success) {
+            fb.className = 'feedback success';
+            fb.textContent = "Message sent — I'll be in touch.";
+            document.getElementById('contact-form').reset();
+            setCount(data.count || 1);
+          } else {
+            throw new Error(data.error || `Server error (${status})`);
+          }
+        })
+        .catch(err => {
+          fb.className = 'feedback error';
+          fb.textContent = err.message || 'Something went wrong. Please try again.';
+        })
+        .finally(() => {
+          btn.disabled = false;
+          btn.textContent = 'Send Message';
+        });
+    });
+  </script>
+
+</body>
+</html>
