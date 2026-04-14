@@ -1,11 +1,19 @@
 {
   "projects": [
     {
-      "title": "Cloud-Hosted Portfolio Site (gorillac.net)",
-      "description": "Designed and deployed a personal portfolio site on Google Cloud Storage with Cloud CDN, HTTPS via managed SSL, and HTTP-to-HTTPS redirect. Infrastructure fully defined as code using Terraform.",
+      "title": "Job Copilot — AI-Powered Job Intelligence & Auto-Application Platform",
+      "description": "Built a full-stack job intelligence platform that collects, deduplicates, scores, and analyzes job postings from multiple sources (Greenhouse, Lever, Remotive, RemoteJobs.io, USAJobs). The platform generates tailored resumes and cover letters per job using Claude Sonnet, with experience bullets grouped by role, scored for relevance against job requirements, and rewritten to be impact-first. Implemented a Playwright-based automated application engine that fills and submits Greenhouse and Lever application forms — including custom question handling via Claude — with CAPTCHA detection, screenshot audit trails, and per-attempt status tracking. Deployed as a Dockerized FastAPI app with a Jinja2 UI, SQLAlchemy ORM, MySQL backend, and Alembic migrations.",
       "role": "Sole Architect & Engineer",
-      "tools": ["Terraform", "GCP", "Cloud Storage", "Cloud CDN", "Cloud Load Balancing", "Managed SSL"],
-      "outcome": "Live production site at gorillac.net with sub-second global load times via CDN edge caching.",
+      "tools": ["Python", "FastAPI", "Playwright", "SQLAlchemy", "MySQL", "Alembic", "Claude API (Anthropic)", "Docker", "Jinja2", "Markdown"],
+      "outcome": "End-to-end pipeline from job discovery to automated submission — one button fires a tailored resume, cover letter, and a Playwright-driven application against real job boards. Claude handles custom form questions, screenshots capture every submission for audit, and job status updates automatically on success.",
+      "link": "https://gorillac.net"
+    },
+    {
+      "title": "Cloud-Hosted Portfolio Site — IaC on GCP (gorillac.net)",
+      "description": "Designed and deployed a production-grade personal portfolio site on GCP with all infrastructure defined as code in Terraform. Resources provisioned include: a GCS bucket with versioning and static website hosting, a Cloud CDN-backed backend bucket for edge caching, a globally reserved static IP, path-based URL map routing (serving static assets from GCS while routing /api/contact to a Cloud Run backend service), a Google-managed SSL certificate covering gorillac.net and www.gorillac.net, HTTPS and HTTP target proxies, and global forwarding rules on ports 80 and 443 with automatic HTTP-to-HTTPS redirect. All assets are uploaded and managed as Terraform resources with correct MIME types and IAM public read access.",
+      "role": "Sole Architect & Engineer",
+      "tools": ["Terraform", "GCP", "Cloud Storage", "Cloud CDN", "Cloud Load Balancing", "Managed SSL", "Cloud Run", "IAM", "Global Forwarding Rules"],
+      "outcome": "Fully reproducible, zero-click infrastructure — a single `terraform apply` provisions and wires the entire stack. Live at gorillac.net with sub-second global load times via CDN edge caching.",
       "link": "https://gorillac.net"
     },
     {
@@ -31,6 +39,14 @@
       "tools": ["Rapid7 InsightVM", ".NET", "Python", "Hybrid Cloud", "Security Monitoring"],
       "outcome": "20%+ reduction in vulnerability resolution timelines through workflow standardization.",
       "link": ""
+    },
+    {
+      "title": "Vulnerability Analysis Blog",
+      "description": "A hands-on technical blog series covering practical vulnerability analysis and security testing workflows for DevSecOps practitioners. Posts cover: (1) structured vulnerability management using Tenable — scanning, triage, and business-context-driven prioritization; (2) integrating the OWASP Top 10 (2021) into analysis workflows using OWASP ZAP, Burp Suite, Nessus, and Qualys to map findings and communicate risk; (3) a full seven-stage penetration testing workflow with Metasploit — from reconnaissance through post-exploitation and reporting.",
+      "role": "Security Researcher & Author",
+      "tools": ["Tenable", "OWASP ZAP", "Burp Suite", "Metasploit", "Nessus", "Qualys", "OWASP Top 10", "CVSS", "Exploit-DB", "Meterpreter"],
+      "outcome": "Publicly documented, end-to-end security research demonstrating hands-on expertise in vulnerability identification, exploitation validation, risk prioritization, and remediation — moving beyond theoretical knowledge into real-world threat confirmation.",
+      "link": "https://guru2linux.github.io/vuln-analysis-blog/"
     },
     {
       "title": "Healthcare Infrastructure Hardening — Florida Dept. of Health",
@@ -60,7 +76,15 @@
     },
     {
       "category": "Application & Backend",
-      "items": ["REST APIs", "JWT / OAuth2", ".NET", "Python", "SQL Server", "Bash / Shell Scripting"]
+      "items": ["REST APIs", "JWT / OAuth2", ".NET", "Python", "FastAPI", "SQL Server", "MySQL", "Bash / Shell Scripting"]
+    },
+    {
+      "category": "AI & Automation",
+      "items": ["Claude API (Anthropic)", "Prompt Engineering", "Playwright", "Browser Automation", "LLM-Driven Workflows"]
+    },
+    {
+      "category": "Containers & Deployment",
+      "items": ["Docker", "Docker Compose", "Cloud Run"]
     },
     {
       "category": "Networking",
