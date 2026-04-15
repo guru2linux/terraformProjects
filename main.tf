@@ -55,6 +55,42 @@ resource "google_storage_bucket_object" "job_copilot_demo" {
   content_type = "text/html"
 }
 
+# CompTIA stackable certification logos
+resource "google_storage_bucket_object" "cert_cnsp" {
+  name         = "certs/CNSP_Certified-1.png"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/certs/CNSP_Certified-1.png"
+  content_type = "image/png"
+}
+
+resource "google_storage_bucket_object" "cert_cnvp" {
+  name         = "certs/CNVP_Certified-1.png"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/certs/CNVP_Certified-1.png"
+  content_type = "image/png"
+}
+
+resource "google_storage_bucket_object" "cert_cios" {
+  name         = "certs/CIOS_Certified-1.png"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/certs/CIOS_Certified-1.png"
+  content_type = "image/png"
+}
+
+resource "google_storage_bucket_object" "cert_csap" {
+  name         = "certs/CSAP_Certified-1.png"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/certs/CSAP_Certified-1.png"
+  content_type = "image/png"
+}
+
+resource "google_storage_bucket_object" "cert_csis" {
+  name         = "certs/CSIS_Certified-1.png"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/certs/CSIS_Certified-1.png"
+  content_type = "image/png"
+}
+
 # Suppress SCC PUBLIC_BUCKET_ACL finding — bucket is intentionally public for static site hosting
 resource "google_scc_v2_project_mute_config" "public_bucket_acl" {
   mute_config_id = "gorillac-site-bucket-public-acl"

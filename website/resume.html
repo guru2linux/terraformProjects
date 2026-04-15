@@ -174,6 +174,55 @@
       letter-spacing: 1px;
     }
 
+    .cert-logos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .cert-logo-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px 16px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 130px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .cert-logo-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(79,142,247,0.25);
+    }
+
+    .cert-logo-card img {
+      height: 88px;
+      width: auto;
+      display: block;
+    }
+
+    .cert-logo-card span {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #222;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .cert-subsection-label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: #555;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      margin-top: 4px;
+    }
+
     /* Skills */
     .skills {
       display: flex;
@@ -338,6 +387,30 @@
     <!-- Certifications -->
     <div class="section">
       <div class="section-title">Certifications</div>
+      <div class="cert-subsection-label">Stackable Certifications</div>
+      <div class="cert-logos">
+        <div class="cert-logo-card">
+          <img src="certs/CNSP_Certified-1.png" alt="CNSP">
+          <span>Network Security Professional</span>
+        </div>
+        <div class="cert-logo-card">
+          <img src="certs/CNVP_Certified-1.png" alt="CNVP">
+          <span>Network Vulnerability Assessment Professional</span>
+        </div>
+        <div class="cert-logo-card">
+          <img src="certs/CIOS_Certified-1.png" alt="CIOS">
+          <span>IT Operations Specialist</span>
+        </div>
+        <div class="cert-logo-card">
+          <img src="certs/CSAP_Certified-1.png" alt="CSAP">
+          <span>Secure Analytics Professional</span>
+        </div>
+        <div class="cert-logo-card">
+          <img src="certs/CSIS_Certified-1.png" alt="CSIS">
+          <span>Security Analytics Specialist</span>
+        </div>
+      </div>
+      <div class="cert-subsection-label">Individual Certifications</div>
       <div class="certs">
         <span class="cert-badge">SSCP</span>
         <span class="cert-badge">CySA+</span>
