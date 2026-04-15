@@ -9,6 +9,11 @@ variable "sendgrid_api_key" {
   default     = ""
 }
 
+variable "billing_account_id" {
+  description = "GCP billing account ID (format: XXXXXX-XXXXXX-XXXXXX)"
+  type        = string
+}
+
 # ──────────────────────────────────────────────────────────────
 # Required APIs
 # ──────────────────────────────────────────────────────────────
@@ -50,6 +55,11 @@ resource "google_project_service" "servicenetworking" {
 
 resource "google_project_service" "vpcaccess" {
   service            = "vpcaccess.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "billingbudgets" {
+  service            = "billingbudgets.googleapis.com"
   disable_on_destroy = false
 }
 
@@ -426,9 +436,49 @@ resource "google_compute_region_network_endpoint_group" "api" {
   }
 }
 
+# Cloud Armor — rate-limit the contact API (10 req/min per IP)
+resource "google_compute_security_policy" "contact_api" {
+  name        = "gorillac-contact-api-policy"
+  description = "Rate-limit the contact form API endpoint"
+
+  rule {
+    action      = "throttle"
+    priority    = 1000
+    description = "Rate limit: 10 req/min per IP"
+    match {
+      versioned_expr = "SRC_IPS_V1"
+      config {
+        src_ip_ranges = ["*"]
+      }
+    }
+    rate_limit_options {
+      conform_action = "allow"
+      exceed_action  = "deny(429)"
+      enforce_on_key = "IP"
+      rate_limit_threshold {
+        count        = 10
+        interval_sec = 60
+      }
+    }
+  }
+
+  rule {
+    action      = "allow"
+    priority    = 2147483647
+    description = "Default allow"
+    match {
+      versioned_expr = "SRC_IPS_V1"
+      config {
+        src_ip_ranges = ["*"]
+      }
+    }
+  }
+}
+
 resource "google_compute_backend_service" "api" {
-  name     = "gorillac-api-backend"
-  protocol = "HTTPS"
+  name            = "gorillac-api-backend"
+  protocol        = "HTTPS"
+  security_policy = google_compute_security_policy.contact_api.id
 
   backend {
     group = google_compute_region_network_endpoint_group.api.id
@@ -449,6 +499,40 @@ resource "google_storage_bucket_object" "contact_page" {
 # ──────────────────────────────────────────────────────────────
 # Outputs
 # ──────────────────────────────────────────────────────────────
+
+# ──────────────────────────────────────────────────────────────
+# Billing budget — alert at 50%, 90%, and 100% of $25/month
+# ──────────────────────────────────────────────────────────────
+
+resource "google_billing_budget" "site" {
+  billing_account = var.billing_account_id
+  display_name    = "gorillac-site monthly budget"
+
+  budget_filter {
+    projects = ["projects/${data.google_project.project.number}"]
+  }
+
+  amount {
+    specified_amount {
+      currency_code = "USD"
+      units         = "25"
+    }
+  }
+
+  threshold_rules {
+    threshold_percent = 0.5
+  }
+
+  threshold_rules {
+    threshold_percent = 0.9
+  }
+
+  threshold_rules {
+    threshold_percent = 1.0
+  }
+
+  depends_on = [google_project_service.billingbudgets]
+}
 
 output "db_instance_connection_name" {
   value       = google_sql_database_instance.contacts.connection_name

@@ -104,6 +104,13 @@ def contact_handler(request):
         if not (name and email and message):
             return (json.dumps({"error": "All fields are required."}), 400, headers)
 
+        if len(name) > 255:
+            return (json.dumps({"error": "Name is too long."}), 400, headers)
+        if len(email) > 255:
+            return (json.dumps({"error": "Invalid email address."}), 400, headers)
+        if len(message) > 5000:
+            return (json.dumps({"error": "Message too long."}), 400, headers)
+
         if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
             return (json.dumps({"error": "Invalid email address."}), 400, headers)
 
