@@ -63,6 +63,11 @@ resource "google_project_service" "billingbudgets" {
   disable_on_destroy = false
 }
 
+resource "google_project_service" "securitycenter" {
+  service            = "securitycenter.googleapis.com"
+  disable_on_destroy = false
+}
+
 # ──────────────────────────────────────────────────────────────
 # VPC — private networking for Cloud SQL
 # ──────────────────────────────────────────────────────────────
@@ -137,6 +142,7 @@ resource "google_sql_database_instance" "contacts" {
     ip_configuration {
       ipv4_enabled    = false
       private_network = google_compute_network.vpc.id
+      ssl_mode        = "ENCRYPTED_ONLY"
     }
   }
 
