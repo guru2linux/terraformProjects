@@ -91,7 +91,14 @@ resource "google_storage_bucket_object" "cert_csis" {
   content_type = "image/png"
 }
 
-# Suppress SCC PUBLIC_BUCKET_ACL finding — bucket is intentionally public for static site hosting
+# Bucket is intentionally public — serves static website content via CDN/load balancer
+resource "google_storage_bucket_iam_member" "public_read" {
+  bucket = google_storage_bucket.website.name
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
+}
+
+# Suppress SCC PUBLIC_BUCKET_ACL finding — public access is intentional for static site hosting
 resource "google_scc_v2_project_mute_config" "public_bucket_acl" {
   mute_config_id = "gorillac-site-bucket-public-acl"
   project        = "gorillac-site"
@@ -100,13 +107,6 @@ resource "google_scc_v2_project_mute_config" "public_bucket_acl" {
   description    = "gorillac-site-bucket is intentionally public for static website hosting"
   filter         = "category=\"PUBLIC_BUCKET_ACL\" AND resource.name=\"//storage.googleapis.com/gorillac-site-bucket\""
   depends_on     = [google_project_service.securitycenter]
-}
-
-# Make the bucket publicly readable
-resource "google_storage_bucket_iam_member" "public_read" {
-  bucket = google_storage_bucket.website.name
-  role   = "roles/storage.objectViewer"
-  member = "allUsers"
 }
 
 # Reserve a static external IP
