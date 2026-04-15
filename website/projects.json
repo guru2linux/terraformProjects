@@ -6,7 +6,7 @@
       "role": "Sole Architect & Engineer",
       "tools": ["Python", "FastAPI", "Playwright", "SQLAlchemy", "MySQL", "Alembic", "Claude API (Anthropic)", "Docker", "Jinja2", "Markdown"],
       "outcome": "End-to-end pipeline from job discovery to automated submission — one button fires a tailored resume, cover letter, and a Playwright-driven application against real job boards. Claude handles custom form questions, screenshots capture every submission for audit, and job status updates automatically on success.",
-      "link": "https://gorillac.net"
+      "link": "job-copilot-demo.html"
     },
     {
       "title": "Cloud-Hosted Portfolio Site — IaC on GCP (gorillac.net)",
@@ -14,7 +14,7 @@
       "role": "Sole Architect & Engineer",
       "tools": ["Terraform", "GCP", "Cloud Storage", "Cloud CDN", "Cloud Load Balancing", "Managed SSL", "Cloud Run", "IAM", "Global Forwarding Rules"],
       "outcome": "Fully reproducible, zero-click infrastructure — a single `terraform apply` provisions and wires the entire stack. Live at gorillac.net with sub-second global load times via CDN edge caching.",
-      "link": "https://gorillac.net"
+      "link": ""
     },
     {
       "title": "Enterprise Application Security — Pasco County BOCC",
@@ -33,11 +33,11 @@
       "link": ""
     },
     {
-      "title": "Vulnerability Remediation Workflows — Rapid7",
-      "description": "Partnered with engineering teams to remediate backend vulnerabilities across .NET and Python environments. Designed structured remediation workflows and supported deployment of security monitoring across hybrid infrastructure.",
-      "role": "Security Support Engineer",
-      "tools": ["Rapid7 InsightVM", ".NET", "Python", "Hybrid Cloud", "Security Monitoring"],
-      "outcome": "20%+ reduction in vulnerability resolution timelines through workflow standardization.",
+      "title": "Vulnerability Management Support — Rapid7",
+      "description": "Served as a Technical Support Engineer supporting enterprise customers deploying and troubleshooting Rapid7's vulnerability management platform. Diagnosed complex network and product issues within vulnerability scanning infrastructure, developed log analysis workflows using regex to investigate reported issues, and acted as liaison between customers and Engineering/Product teams to drive resolutions. Built deep subject-matter expertise in InsightVM to support customers across diverse hybrid environments.",
+      "role": "Technical Support Engineer",
+      "tools": ["Rapid7 InsightVM", "Log Analysis", "TCP/IP", "DNS", "NMAP", "LDAP", "Regex", "Hybrid Infrastructure"],
+      "outcome": "Reduced customer vulnerability resolution timelines and improved scan infrastructure reliability through structured troubleshooting workflows and cross-functional escalation.",
       "link": ""
     },
     {

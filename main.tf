@@ -47,6 +47,14 @@ resource "google_storage_bucket_object" "projects_data" {
   content_type = "application/json"
 }
 
+# Upload the Job Copilot demo page
+resource "google_storage_bucket_object" "job_copilot_demo" {
+  name         = "job-copilot-demo.html"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/job-copilot-demo.html"
+  content_type = "text/html"
+}
+
 # Make the bucket publicly readable
 resource "google_storage_bucket_iam_member" "public_read" {
   bucket = google_storage_bucket.website.name

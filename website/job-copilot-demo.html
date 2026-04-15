@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Copilot — Live Demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg:       #0f0f0f;
+      --surface:  #1a1a1a;
+      --surface2: #1e2230;
+      --surface3: #242424;
+      --border:   #2a2a2a;
+      --text:     #cccccc;
+      --bright:   #ffffff;
+      --muted:    #777777;
+      --accent:   #4f8ef7;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: var(--text);
+      padding: 32px 20px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Top nav ── */
+    .back { text-align: center; margin-bottom: 24px; }
+    .back a { font-size: 0.88rem; letter-spacing: 1px; }
+
+    .page-header { text-align: center; margin-bottom: 36px; }
+    .page-header h1 { color: var(--bright); font-size: 2rem; letter-spacing: 3px; }
+    .page-header p  { color: var(--muted); font-size: 0.88rem; margin-top: 8px; letter-spacing: 1px; }
+    .divider { width: 60px; height: 3px; background: var(--accent); margin: 14px auto; border-radius: 2px; }
+
+    .demo-badge {
+      display: inline-block;
+      background: #1c2d4a;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 999px;
+      margin-top: 10px;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    /* ── Nav tabs ── */
+    .app-nav {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+
+    .app-nav button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 10px 18px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      letter-spacing: 0.5px;
+      transition: color 0.15s;
+    }
+
+    .app-nav button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .app-nav button:hover:not(.active) { color: var(--text); }
+
+    /* ── Dashboard cards ── */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .dashboard-card .d-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .dashboard-card .d-value {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--bright);
+    }
+
+    /* ── Filters ── */
+    .filters {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .filters label {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .filters select, .filters input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 5px;
+      font-size: 0.85rem;
+      min-width: 120px;
+    }
+
+    .filters button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      align-self: flex-end;
+    }
+
+    .filters .reset-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+    }
+
+    th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.87rem;
+      vertical-align: middle;
+      color: var(--text);
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #1f1f1f; }
+
+    .score-cell {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--bright);
+      text-align: center;
+    }
+
+    .score-high  { color: #4ade80; }
+    .score-mid   { color: #facc15; }
+    .score-low   { color: #f87171; }
+
+    .job-title-link { color: var(--bright); font-weight: 600; font-size: 0.9rem; }
+    .job-title-link:hover { color: var(--accent); text-decoration: underline; }
+    .job-id { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+    .source-badge {
+      display: inline-block;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .status-new     { background: #1c2d4a; color: #60a5fa; border: 1px solid #2d4a78; }
+    .status-saved   { background: #1a2e1a; color: #4ade80; border: 1px solid #2d5a2d; }
+    .status-applied { background: #2d1a3a; color: #c084fc; border: 1px solid #5a2d8a; }
+    .status-skipped { background: #2a2a2a; color: #777;    border: 1px solid #3a3a3a; }
+
+    .remote-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      background: #1a2e1a;
+      color: #4ade80;
+      border: 1px solid #2d5a2d;
+    }
+
+    .email-link { font-size: 0.78rem; color: var(--accent); }
+
+    /* ── Radar view ── */
+    .radar-meta {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+
+    .radar-grid { display: flex; flex-direction: column; gap: 14px; }
+
+    .radar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      transition: border-color 0.2s;
+    }
+
+    .radar-card:hover { border-color: var(--accent); }
+
+    .radar-title { font-size: 1.05rem; font-weight: 700; color: var(--bright); margin-bottom: 6px; }
+    .radar-title a { color: var(--bright); }
+    .radar-title a:hover { color: var(--accent); }
+
+    .radar-company { font-size: 0.85rem; color: var(--muted); margin-bottom: 10px; }
+
+    .radar-score {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .radar-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .radar-tag {
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* ── Pipeline view ── */
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .pipeline-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .pipeline-card .p-source {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .pipeline-card .p-inserted {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #4ade80;
+    }
+
+    .pipeline-card .p-skipped {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .pipeline-card .p-status {
+      font-size: 0.72rem;
+      color: #4ade80;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 10px;
+    }
+
+    .pipeline-log {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #4ade80;
+      line-height: 1.8;
+    }
+
+    .log-dim  { color: var(--muted); }
+    .log-warn { color: #facc15; }
+
+    /* ── View toggle ── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ── Empty row ── */
+    .empty-row td {
+      text-align: center;
+      color: var(--muted);
+      padding: 32px;
+      font-style: italic;
+    }
+
+    .summary-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<div class="back">
+  <a href="portfolio.html">← Back to Portfolio</a>
+</div>
+
+<div class="container">
+  <div class="page-header">
+    <h1>JOB COPILOT</h1>
+    <div class="divider"></div>
+    <p>AI-Powered Job Intelligence & Auto-Application Platform</p>
+    <div class="demo-badge">Interactive Demo</div>
+  </div>
+
+  <div class="app-nav">
+    <button class="active" onclick="showView('jobs')">All Jobs</button>
+    <button onclick="showView('radar')">Radar</button>
+    <button onclick="showView('pipeline')">Pipeline Log</button>
+  </div>
+
+  <!-- ══════════════════════════════════════ JOBS VIEW ══ -->
+  <div id="view-jobs" class="view active">
+
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <div class="d-label">Total Jobs</div>
+        <div class="d-value" id="stat-total">0</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="d-label">New</div>
+        <div class="d-value" id="stat-new">0</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="d-label">Saved</div>
+        <div class="d-value" id="stat-saved">0</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="d-label">Applied</div>
+        <div class="d-value" id="stat-applied">0</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="d-label">Avg Score</div>
+        <div class="d-value" id="stat-avg">0</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="d-label">With Email</div>
+        <div class="d-value" id="stat-email">0</div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <label>
+        Source
+        <select id="filter-source" onchange="applyFilters()">
+          <option value="">All</option>
+          <option>remoteok</option>
+          <option>weworkremotely</option>
+          <option>remotive</option>
+          <option>jobspresso</option>
+          <option>greenhouse</option>
+          <option>lever</option>
+          <option>usajobs</option>
+          <option>virtualvocations</option>
+        </select>
+      </label>
+      <label>
+        Status
+        <select id="filter-status" onchange="applyFilters()">
+          <option value="">All</option>
+          <option>new</option>
+          <option>saved</option>
+          <option>applied</option>
+          <option>skipped</option>
+        </select>
+      </label>
+      <label>
+        Min Score
+        <input id="filter-score" type="number" placeholder="e.g. 60" style="width:90px" oninput="applyFilters()">
+      </label>
+      <label>
+        Sort
+        <select id="filter-sort" onchange="applyFilters()">
+          <option value="score">Score</option>
+          <option value="date">Posted Date</option>
+        </select>
+      </label>
+      <button class="reset-btn" onclick="resetFilters()">Reset</button>
+    </div>
+
+    <div class="summary-bar">
+      <span id="summary-text">Showing all jobs</span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Score</th>
+            <th>Company</th>
+            <th>Title</th>
+            <th>Source</th>
+            <th>Remote</th>
+            <th>Contact</th>
+            <th>Status</th>
+            <th>Posted</th>
+          </tr>
+        </thead>
+        <tbody id="jobs-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ RADAR VIEW ══ -->
+  <div id="view-radar" class="view">
+    <div class="radar-meta">
+      Showing new jobs with score ≥ <strong style="color:var(--bright)">75</strong>,
+      posted within the last <strong style="color:var(--bright)">14</strong> days.
+    </div>
+    <div class="radar-grid" id="radar-grid"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════ PIPELINE VIEW ══ -->
+  <div id="view-pipeline" class="view">
+    <div class="pipeline-grid" id="pipeline-grid"></div>
+    <div class="pipeline-log" id="pipeline-log"></div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ── Sample data ─────────────────────────────────────────────────────────────
+const JOBS = [
+  { id:1,  score:112, company:'NordSecurity',      title:'DevOps Engineer (Saily)',            source:'weworkremotely', remote:'remote',  email:'devops@nordsecurity.com',       status:'saved',   posted:'2026-04-06' },
+  { id:2,  score:108, company:'Rebuy Inc.',         title:'Sr Software Engineer – Backend',     source:'remoteok',      remote:'remote',  email:null,                            status:'new',     posted:'2026-04-08' },
+  { id:3,  score:104, company:'Cloudflare',         title:'Platform Engineer',                  source:'greenhouse',    remote:'remote',  email:'recruiting@cloudflare.com',     status:'applied', posted:'2026-04-03' },
+  { id:4,  score:101, company:'HashiCorp',          title:'Backend Software Engineer',          source:'lever',         remote:'remote',  email:null,                            status:'new',     posted:'2026-04-10' },
+  { id:5,  score: 98, company:'Datadog',            title:'Security Engineer – Application',    source:'greenhouse',    remote:'remote',  email:'careers@datadog.com',           status:'saved',   posted:'2026-04-07' },
+  { id:6,  score: 95, company:'Tailscale',          title:'Backend Engineer (Go/Python)',        source:'remotive',      remote:'remote',  email:null,                            status:'new',     posted:'2026-04-09' },
+  { id:7,  score: 93, company:'Render',             title:'Platform Engineer – Infrastructure', source:'weworkremotely',remote:'remote',  email:'jobs@render.com',               status:'new',     posted:'2026-04-11' },
+  { id:8,  score: 91, company:'PlanetScale',        title:'Cloud Security Engineer',            source:'remoteok',      remote:'remote',  email:null,                            status:'new',     posted:'2026-04-05' },
+  { id:9,  score: 88, company:'Grafana Labs',       title:'Software Engineer – Backend',        source:'jobspresso',    remote:'remote',  email:'hiring@grafana.com',            status:'new',     posted:'2026-04-12' },
+  { id:10, score: 85, company:'Temporal',           title:'Developer Experience Engineer',      source:'lever',         remote:'remote',  email:null,                            status:'new',     posted:'2026-04-08' },
+  { id:11, score: 82, company:'Fly.io',             title:'Infrastructure Engineer',            source:'remoteok',      remote:'remote',  email:'jobs@fly.io',                   status:'saved',   posted:'2026-04-04' },
+  { id:12, score: 79, company:'Buf Technologies',  title:'Backend Engineer – API Platform',    source:'weworkremotely',remote:'remote',  email:null,                            status:'new',     posted:'2026-04-10' },
+  { id:13, score: 76, company:'1Password',          title:'DevSecOps Engineer',                 source:'greenhouse',    remote:'remote',  email:'security-jobs@1password.com',   status:'new',     posted:'2026-04-06' },
+  { id:14, score: 74, company:'Neon Tech',          title:'Backend Developer – Postgres',       source:'remotive',      remote:'remote',  email:null,                            status:'new',     posted:'2026-04-09' },
+  { id:15, score: 71, company:'Turso',              title:'Software Engineer – Distributed DB', source:'jobspresso',    remote:'remote',  email:null,                            status:'skipped', posted:'2026-04-02' },
+  { id:16, score: 68, company:'US Dept of Defense', title:'DevSecOps Engineer – GS-13',        source:'usajobs',       remote:'hybrid',  email:'dod-hr@usajobs.gov',            status:'new',     posted:'2026-04-01' },
+  { id:17, score: 65, company:'Vercel',             title:'Edge Infrastructure Engineer',       source:'remoteok',      remote:'remote',  email:null,                            status:'new',     posted:'2026-04-11' },
+  { id:18, score: 61, company:'Supabase',           title:'Backend Engineer – Realtime',        source:'weworkremotely',remote:'remote',  email:'careers@supabase.com',          status:'new',     posted:'2026-04-07' },
+  { id:19, score: 58, company:'Astro',              title:'Developer Advocate / Engineer',      source:'remotive',      remote:'remote',  email:null,                            status:'skipped', posted:'2026-03-28' },
+  { id:20, score: 42, company:'Virtual Voc Co.',    title:'Remote IT Support Specialist',       source:'virtualvocations',remote:'remote',email:null,                           status:'skipped', posted:'2026-03-25' },
+];
+
+const PIPELINE = [
+  { source:'remoteok',       inserted:39,  skipped:54,  ms:820  },
+  { source:'weworkremotely', inserted:71,  skipped:19,  ms:1240 },
+  { source:'remotive',       inserted:48,  skipped:34,  ms:910  },
+  { source:'jobspresso',     inserted:18,  skipped:2,   ms:540  },
+  { source:'greenhouse',     inserted:122, skipped:88,  ms:3100 },
+  { source:'lever',          inserted:95,  skipped:61,  ms:2870 },
+  { source:'usajobs',        inserted:31,  skipped:14,  ms:1050 },
+  { source:'virtualvocations',inserted:6, skipped:4,   ms:430  },
+  { source:'remotejobs_io',  inserted:11,  skipped:14,  ms:18400},
+];
+
+// ── Render jobs table ────────────────────────────────────────────────────────
+function scoreClass(s) {
+  if (s >= 90) return 'score-high';
+  if (s >= 70) return 'score-mid';
+  return 'score-low';
+}
+
+function statusClass(s) {
+  return 'status-' + s;
+}
+
+function renderJobs(jobs) {
+  const tbody = document.getElementById('jobs-tbody');
+  if (!jobs.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No jobs matched your filters.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = jobs.map(j => `
+    <tr>
+      <td class="score-cell ${scoreClass(j.score)}">${j.score}</td>
+      <td>${esc(j.company)}</td>
+      <td>
+        <div class="job-title-link">${esc(j.title)}</div>
+        <div class="job-id">ID: ${j.id}</div>
+      </td>
+      <td><span class="source-badge">${esc(j.source)}</span></td>
+      <td><span class="remote-badge">${esc(j.remote)}</span></td>
+      <td>${j.email ? `<a class="email-link" href="mailto:${esc(j.email)}">${esc(j.email)}</a>` : '<span style="color:#444">—</span>'}</td>
+      <td><span class="status-badge ${statusClass(j.status)}">${j.status}</span></td>
+      <td style="color:var(--muted);font-size:0.8rem">${j.posted}</td>
+    </tr>
+  `).join('');
+}
+
+function applyFilters() {
+  let jobs = [...JOBS];
+  const src    = document.getElementById('filter-source').value;
+  const status = document.getElementById('filter-status').value;
+  const minScore = parseInt(document.getElementById('filter-score').value) || 0;
+  const sort   = document.getElementById('filter-sort').value;
+
+  if (src)    jobs = jobs.filter(j => j.source === src);
+  if (status) jobs = jobs.filter(j => j.status === status);
+  if (minScore) jobs = jobs.filter(j => j.score >= minScore);
+
+  jobs.sort((a, b) => sort === 'date'
+    ? new Date(b.posted) - new Date(a.posted)
+    : b.score - a.score);
+
+  renderJobs(jobs);
+  document.getElementById('summary-text').textContent =
+    `Showing ${jobs.length} of ${JOBS.length} job(s)`;
+}
+
+function resetFilters() {
+  document.getElementById('filter-source').value = '';
+  document.getElementById('filter-status').value = '';
+  document.getElementById('filter-score').value  = '';
+  document.getElementById('filter-sort').value   = 'score';
+  applyFilters();
+}
+
+// ── Stats ────────────────────────────────────────────────────────────────────
+function renderStats() {
+  const total   = JOBS.length;
+  const newJ    = JOBS.filter(j => j.status === 'new').length;
+  const saved   = JOBS.filter(j => j.status === 'saved').length;
+  const applied = JOBS.filter(j => j.status === 'applied').length;
+  const avg     = Math.round(JOBS.reduce((s, j) => s + j.score, 0) / total);
+  const email   = JOBS.filter(j => j.email).length;
+
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-new').textContent     = newJ;
+  document.getElementById('stat-saved').textContent   = saved;
+  document.getElementById('stat-applied').textContent = applied;
+  document.getElementById('stat-avg').textContent     = avg;
+  document.getElementById('stat-email').textContent   = email;
+}
+
+// ── Radar ────────────────────────────────────────────────────────────────────
+function renderRadar() {
+  const radarJobs = JOBS
+    .filter(j => j.status === 'new' && j.score >= 75)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 8);
+
+  document.getElementById('radar-grid').innerHTML = radarJobs.map(j => `
+    <div class="radar-card">
+      <div class="radar-title">${esc(j.title)}</div>
+      <div class="radar-company"><strong>${esc(j.company)}</strong> · ${esc(j.source)} · ${j.posted}</div>
+      <div class="radar-score ${scoreClass(j.score)}">Score: ${j.score}</div>
+      <div class="radar-tags">
+        <span class="radar-tag">${esc(j.remote)}</span>
+        <span class="radar-tag">status: ${j.status}</span>
+        ${j.email ? `<span class="radar-tag">✉ contact found</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Pipeline log ─────────────────────────────────────────────────────────────
+function renderPipeline() {
+  const totalInserted = PIPELINE.reduce((s, p) => s + p.inserted, 0);
+  const totalScored   = JOBS.length;
+
+  document.getElementById('pipeline-grid').innerHTML = PIPELINE.map(p => `
+    <div class="pipeline-card">
+      <div class="p-source">${p.source}</div>
+      <div class="p-inserted">+${p.inserted}</div>
+      <div class="p-skipped">${p.skipped} skipped · ${(p.ms/1000).toFixed(1)}s</div>
+      <div class="p-status">✓ success</div>
+    </div>
+  `).join('');
+
+  const lines = [
+    `<span class="log-dim">=== Running fast collectors in parallel ===</span>`,
+    ...PIPELINE.slice(0, -1).map(p =>
+      `Running collector: <span style="color:#e2e8f0">${p.source}</span>`),
+    `<span class="log-dim">=== Running Playwright collector ===</span>`,
+    `Running collector: <span style="color:#e2e8f0">remotejobs_io</span>`,
+    ``,
+    `<span class="log-dim">Running scoring...</span>`,
+    `Scoring complete: <span style="color:#4ade80">scored=${totalScored}</span>, skipped=0`,
+    ``,
+    `<span class="log-dim">Generating radar report...</span>`,
+    `<span style="color:#4ade80">Saved report to: data/reports/daily_radar_20260415_001005.txt</span>`,
+    ``,
+    `<span class="log-dim">=== Pipeline Summary ===</span>`,
+    ...PIPELINE.map(p =>
+      `${p.source}: inserted <span style="color:#4ade80">${p.inserted}</span>, skipped <span class="log-dim">${p.skipped}</span>`),
+    ``,
+    `Total inserted: <span style="color:#4ade80">${totalInserted}</span> jobs`,
+    `<span class="log-dim">=== Done ===</span>`,
+  ];
+
+  document.getElementById('pipeline-log').innerHTML = lines.join('<br>');
+}
+
+// ── View switching ───────────────────────────────────────────────────────────
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.app-nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+renderStats();
+applyFilters();
+renderRadar();
+renderPipeline();
+</script>
+</body>
+</html>
