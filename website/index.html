@@ -144,12 +144,37 @@
       user-select: none;
     }
 
+    /* Role / typewriter */
+    .role {
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      color: #2a2a2a;
+      text-transform: uppercase;
+      margin-top: 14px;
+      min-height: 1em;
+      opacity: 0;
+      animation: fadeIn 0.1s ease forwards 1.0s;
+    }
+    .role-cursor {
+      display: inline-block;
+      width: 1px;
+      height: 0.75em;
+      background: var(--accent);
+      margin-left: 2px;
+      vertical-align: middle;
+      opacity: 0;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
     /* Scanner line */
     .scanner-wrap {
       position: relative;
       width: 220px;
       height: 1px;
-      margin: 26px auto 30px;
+      margin: 18px auto 30px;
       background: rgba(0,255,136,0.12);
       opacity: 0;
       animation: fadeIn 0.4s ease forwards 0.9s;
@@ -296,6 +321,7 @@
 
   <div class="container">
     <h1 class="name">Lee Dulcio</h1>
+    <div class="role"><span id="role-text"></span><span class="role-cursor" id="role-cursor"></span></div>
 
     <div class="scanner-wrap"></div>
 
@@ -325,6 +351,25 @@
     <span class="status-dot"></span>
     online
   </div>
+
+  <script>
+    const text = 'DevSecOps Engineer';
+    const el   = document.getElementById('role-text');
+    const cur  = document.getElementById('role-cursor');
+    let i = 0;
+
+    setTimeout(() => {
+      cur.style.opacity = '1';
+      const t = setInterval(() => {
+        if (i < text.length) {
+          el.textContent += text[i++];
+        } else {
+          clearInterval(t);
+          cur.style.animation = 'blink 1s step-end infinite';
+        }
+      }, 62);
+    }, 1100);
+  </script>
 
 </body>
 </html>

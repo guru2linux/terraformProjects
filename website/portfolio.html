@@ -48,7 +48,7 @@
     }
 
     .back a {
-      color: #3a3a3a;
+      color: #555;
       text-decoration: none;
       font-size: 0.75rem;
       letter-spacing: 2px;
@@ -105,7 +105,7 @@
       border-bottom: 1px solid var(--border);
       padding-bottom: 10px;
       margin-bottom: 28px;
-      margin-top: 52px;
+      margin-top: 36px;
     }
 
     /* Project cards */
@@ -194,6 +194,13 @@
       font-size: 0.75rem;
       color: #777;
       letter-spacing: 0.5px;
+      transition: border-color 0.2s, color 0.2s;
+      cursor: default;
+    }
+
+    .tool-tag:hover {
+      border-color: var(--accent-border);
+      color: var(--accent);
     }
 
     /* Tools grid */
