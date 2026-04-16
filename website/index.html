@@ -4,107 +4,312 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lee Dulcio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --bg: #050505;
+      --accent: #00ff88;
+      --accent-glow: rgba(0, 255, 136, 0.18);
+      --accent-border: rgba(0, 255, 136, 0.22);
+      --text-dim: #444;
+      --text-mid: #888;
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0f0f0f;
-      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      font-family: 'JetBrains Mono', monospace;
+      overflow: hidden;
+      position: relative;
+      cursor: crosshair;
     }
 
-    .card {
+    /* Subtle dot-grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(0,255,136,0.07) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Vignette */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 70% at center, transparent 30%, #050505 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Film grain overlay */
+    .grain {
+      position: fixed;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 900;
+      animation: grainShift 0.12s steps(1) infinite;
+    }
+
+    @keyframes grainShift {
+      0%   { transform: translate(0, 0); }
+      25%  { transform: translate(-2%, 1%); }
+      50%  { transform: translate(1%, -2%); }
+      75%  { transform: translate(2%, 2%); }
+      100% { transform: translate(-1%, -1%); }
+    }
+
+    /* Corner brackets */
+    .corner {
+      position: fixed;
+      width: 28px;
+      height: 28px;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeIn 0.4s ease forwards 1.6s;
+    }
+    .corner-tl { top: 22px; left: 22px; border-top: 1px solid var(--accent); border-left: 1px solid var(--accent); }
+    .corner-tr { top: 22px; right: 22px; border-top: 1px solid var(--accent); border-right: 1px solid var(--accent); }
+    .corner-bl { bottom: 22px; left: 22px; border-bottom: 1px solid var(--accent); border-left: 1px solid var(--accent); }
+    .corner-br { bottom: 22px; right: 22px; border-bottom: 1px solid var(--accent); border-right: 1px solid var(--accent); }
+
+    /* Status dot */
+    .status {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeIn 0.4s ease forwards 1.8s;
+    }
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 1;
       text-align: center;
-      padding: 60px 80px;
-      background: #1a1a1a;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      padding: 40px 60px;
     }
 
-    h1 {
-      color: #ffffff;
-      font-size: 2.8rem;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
+    /* Name */
+    .name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4.5rem, 13vw, 9.5rem);
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-shadow:
+        0 0 18px rgba(0, 255, 136, 0.55),
+        0 0 50px rgba(0, 255, 136, 0.25),
+        0 0 100px rgba(0, 255, 136, 0.1);
+      line-height: 1;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.15s;
+      user-select: none;
     }
 
-    .divider {
-      width: 60px;
+    /* Scanner line */
+    .scanner-wrap {
+      position: relative;
+      width: 220px;
+      height: 1px;
+      margin: 26px auto 30px;
+      background: rgba(0,255,136,0.12);
+      opacity: 0;
+      animation: fadeIn 0.4s ease forwards 0.9s;
+    }
+    .scanner-wrap::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 35%;
       height: 3px;
-      background: #4f8ef7;
-      margin: 16px auto 32px;
-      border-radius: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: scan 3s ease-in-out infinite 1.2s;
+    }
+    @keyframes scan {
+      0%   { left: -35%; }
+      100% { left: 100%; }
     }
 
+    /* Nav links */
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 1.05s;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0px;
+      padding: 9px 22px;
+      border: 1px solid var(--text-dim);
+      border-radius: 2px;
+      color: var(--text-mid);
+      text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: lowercase;
+      transition: color 0.2s, border-color 0.2s, background 0.2s, gap 0.2s, padding-left 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav-link .prompt {
+      display: inline-block;
+      color: var(--accent);
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      transition: opacity 0.2s, max-width 0.25s ease;
+      font-size: 0.68rem;
+    }
+
+    .nav-link:hover {
+      color: var(--accent);
+      border-color: var(--accent-border);
+      background: var(--accent-glow);
+      gap: 7px;
+    }
+
+    .nav-link:hover .prompt {
+      opacity: 1;
+      max-width: 20px;
+    }
+
+    /* Social icons */
     .icons {
       display: flex;
-      gap: 32px;
+      gap: 14px;
       justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 1.25s;
     }
 
     .icons a {
-      color: #888;
-      font-size: 2rem;
-      transition: color 0.2s, transform 0.2s;
+      color: var(--text-dim);
+      font-size: 1.25rem;
       text-decoration: none;
-    }
-
-    .icons a:hover {
-      transform: translateY(-4px);
-    }
-
-    .icons a.github:hover  { color: #ffffff; }
-    .icons a.facebook:hover { color: #1877f2; }
-    .icons a.youtube:hover  { color: #ff0000; }
-    .icons a.linkedin:hover  { color: #0a66c2; }
-
-    .nav-links {
       display: flex;
-      gap: 12px;
+      align-items: center;
       justify-content: center;
-      margin-bottom: 28px;
+      width: 46px;
+      height: 46px;
+      border: 1px solid #181818;
+      border-radius: 3px;
+      transition: color 0.22s, border-color 0.22s, transform 0.22s, box-shadow 0.22s;
     }
 
-    .resume-link {
-      display: inline-block;
-      padding: 8px 24px;
-      border: 1px solid #4f8ef7;
-      border-radius: 6px;
-      color: #4f8ef7;
-      text-decoration: none;
-      font-size: 0.85rem;
-      letter-spacing: 1px;
-      transition: background 0.2s, color 0.2s;
+    .icons a:hover { transform: translateY(-4px); }
+
+    .icons a.github:hover {
+      color: #e0e0e0;
+      border-color: rgba(224,224,224,0.25);
+      box-shadow: 0 6px 20px rgba(224,224,224,0.1);
+    }
+    .icons a.facebook:hover {
+      color: #1877f2;
+      border-color: rgba(24,119,242,0.3);
+      box-shadow: 0 6px 20px rgba(24,119,242,0.2);
+    }
+    .icons a.youtube:hover {
+      color: #ff2020;
+      border-color: rgba(255,32,32,0.3);
+      box-shadow: 0 6px 20px rgba(255,32,32,0.2);
+    }
+    .icons a.linkedin:hover {
+      color: #0a84ff;
+      border-color: rgba(10,132,255,0.3);
+      box-shadow: 0 6px 20px rgba(10,132,255,0.2);
     }
 
-    .resume-link:hover {
-      background: #4f8ef7;
-      color: #0f0f0f;
+    /* Keyframes */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-</style>
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .container { padding: 30px 24px; }
+      .nav-links { gap: 8px; }
+      .icons { gap: 10px; }
+      .icons a { width: 42px; height: 42px; font-size: 1.1rem; }
+    }
+  </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Lee Dulcio</h1>
-    <div class="divider"></div>
+
+  <div class="grain"></div>
+
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <div class="container">
+    <h1 class="name">Lee Dulcio</h1>
+
+    <div class="scanner-wrap"></div>
+
     <div class="nav-links">
-      <a href="resume.html" class="resume-link">View Resume</a>
-      <a href="portfolio.html" class="resume-link">Portfolio</a>
-      <a href="contact.html" class="resume-link">Contact</a>
+      <a href="resume.html" class="nav-link"><span class="prompt">&gt;_</span>resume</a>
+      <a href="portfolio.html" class="nav-link"><span class="prompt">&gt;_</span>portfolio</a>
+      <a href="contact.html" class="nav-link"><span class="prompt">&gt;_</span>contact</a>
     </div>
+
     <div class="icons">
       <a href="https://guru2linux.github.io/vuln-analysis-blog/" target="_blank" class="github" aria-label="GitHub">
         <i class="fab fa-github"></i>
       </a>
-      <a href="https://www.facebook.com/people/EELNice/100067874862744/" class="facebook" target="_blank" aria-label="Facebook">
+      <a href="https://www.facebook.com/people/EELNice/100067874862744/" target="_blank" class="facebook" aria-label="Facebook">
         <i class="fab fa-facebook"></i>
       </a>
       <a href="https://www.youtube.com/@Ghetto_IT" target="_blank" class="youtube" aria-label="YouTube">
@@ -115,5 +320,11 @@
       </a>
     </div>
   </div>
+
+  <div class="status">
+    <span class="status-dot"></span>
+    online
+  </div>
+
 </body>
 </html>
