@@ -51,5 +51,3 @@ Terraform configuration that deploys the full GCP infrastructure for [gorillac.n
 ## Notes
 
 - The GCS bucket is intentionally public — it serves static website content. An SCC finding (`PUBLIC_BUCKET_ACL`) is muted via a static mute config since the exposure is deliberate.
-- The Cloud SQL instance has `deletion_protection = true`. To destroy it via Terraform you must first set that to `false` and re-apply.
-- State is stored locally (`terraform.tfstate`). For team use, migrate to a GCS remote backend.
