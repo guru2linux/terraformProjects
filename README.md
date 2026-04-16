@@ -34,7 +34,6 @@ Terraform configuration that deploys the full GCP infrastructure for [gorillac.n
 ├── main.tf          # GCS bucket, CDN, load balancer, SSL, static file uploads
 ├── contact.tf       # Cloud Function, Cloud SQL, VPC, Secret Manager, Cloud Armor
 ├── provider.tf      # Google provider + required providers
-├── terraform.tfvars # Variable values (billing account ID, SendGrid key)
 ├── website/         # Static HTML/CSS/JS files uploaded to GCS
 │   ├── index.html
 │   ├── resume.html
