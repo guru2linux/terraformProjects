@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Application Tracker — Demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg:       #0a0a0a;
+      --surface:  #141414;
+      --surface2: #1a1f2e;
+      --surface3: #1e1e1e;
+      --border:   #252525;
+      --text:     #cccccc;
+      --bright:   #ffffff;
+      --muted:    #666666;
+      --accent:   #00cc6a;
+      --accent-dim: rgba(0,204,106,0.12);
+      --accent-border: rgba(0,204,106,0.25);
+
+      --c-received:  #4c9be8;
+      --c-rejected:  #e84c4c;
+      --c-pending:   #e8a84c;
+      --c-interview: #00cc6a;
+      --c-offer:     #b44ce8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+      color: var(--text);
+      padding: 32px 20px 60px;
+    }
+
+    /* dot-grid bg */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0,204,106,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body > * { position: relative; z-index: 1; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .back { text-align: center; margin-bottom: 28px; font-size: 0.82rem; letter-spacing: 1px; }
+    .back a { color: var(--muted); }
+    .back a:hover { color: var(--accent); text-decoration: none; }
+
+    .page-header { text-align: center; margin-bottom: 36px; }
+    .page-header h1 {
+      color: var(--bright);
+      font-size: 1.9rem;
+      letter-spacing: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .divider { width: 50px; height: 2px; background: var(--accent); margin: 12px auto; border-radius: 2px; }
+    .page-header p { color: var(--muted); font-size: 0.8rem; letter-spacing: 1.5px; margin-top: 4px; }
+
+    .demo-badge {
+      display: inline-block;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 999px;
+      margin-top: 10px;
+    }
+
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    /* ── Nav tabs ── */
+    .app-nav {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .app-nav button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 10px 20px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: inherit;
+      transition: color 0.15s;
+    }
+    .app-nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .app-nav button:hover:not(.active) { color: var(--text); }
+
+    /* ── Stat cards ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: var(--accent-border); }
+
+    .stat-card .s-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+    .stat-card .s-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--bright);
+      line-height: 1;
+    }
+    .stat-card .s-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── Charts row ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 780px) { .charts-row { grid-template-columns: 1fr; } }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .chart-card h3 {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+
+    /* Donut chart via conic-gradient */
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .donut {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-label { color: var(--text); flex: 1; }
+    .legend-count { color: var(--muted); font-size: 0.72rem; }
+
+    /* Bar chart */
+    .bar-chart { display: flex; flex-direction: column; gap: 6px; }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 50px 1fr 32px;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+    }
+
+    .bar-label { color: var(--muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .bar-track {
+      background: var(--surface3);
+      border-radius: 3px;
+      height: 18px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+
+    .bar-val { color: var(--text); font-size: 0.7rem; }
+
+    /* ── Filters ── */
+    .filters {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .filters label {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .filters select,
+    .filters input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 5px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      min-width: 130px;
+      outline: none;
+    }
+    .filters select:focus,
+    .filters input:focus { border-color: var(--accent-border); }
+
+    .filters .reset-btn {
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: inherit;
+      align-self: flex-end;
+      transition: color 0.15s;
+    }
+    .filters .reset-btn:hover { color: var(--text); }
+
+    /* ── Summary bar ── */
+    .summary-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    table { width: 100%; border-collapse: collapse; background: var(--surface); }
+
+    th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 11px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: var(--text); }
+    th .sort-icon { margin-left: 4px; opacity: 0.4; font-size: 0.6rem; }
+    th.asc .sort-icon::after  { content: '▲'; }
+    th.desc .sort-icon::after { content: '▼'; }
+    th:not(.asc):not(.desc) .sort-icon::after { content: '⇅'; }
+
+    td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem;
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #161616; }
+
+    .role-text { color: var(--bright); font-weight: 600; font-size: 0.86rem; }
+    .company-text { color: var(--text); }
+    .date-text { color: var(--muted); font-size: 0.76rem; white-space: nowrap; }
+    .notes-text { color: var(--muted); font-size: 0.75rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── Status badges ── */
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      white-space: nowrap;
+    }
+    .s-received  { background: #1c2d4a; color: #4c9be8; border: 1px solid #2d4a78; }
+    .s-rejected  { background: #2d1a1a; color: #e84c4c; border: 1px solid #5a2d2d; }
+    .s-pending   { background: #2d2014; color: #e8a84c; border: 1px solid #5a4020; }
+    .s-interview { background: #0d2e1e; color: #00cc6a; border: 1px solid #1a5a38; }
+    .s-offer     { background: #2a1a3a; color: #b44ce8; border: 1px solid #5a2d8a; }
+
+    /* ── Weekly view ── */
+    .weekly-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .week-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    .week-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .week-label { font-size: 0.8rem; color: var(--bright); font-weight: 600; }
+    .week-total { font-size: 0.72rem; color: var(--muted); }
+
+    .week-bars { display: flex; gap: 6px; align-items: flex-end; height: 48px; }
+
+    .week-bar-col { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+
+    .week-bar {
+      width: 100%;
+      border-radius: 3px 3px 0 0;
+      min-height: 2px;
+      transition: height 0.3s ease;
+    }
+
+    .week-bar-label { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ── Monitor log ── */
+    .monitor-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .monitor-status { font-size: 0.76rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+
+    .monitor-log {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.77rem;
+      color: #4ade80;
+      line-height: 1.9;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .log-dim   { color: var(--muted); }
+    .log-warn  { color: #facc15; }
+    .log-err   { color: #f87171; }
+    .log-info  { color: #60a5fa; }
+    .log-green { color: #4ade80; }
+
+    .company-table-wrap {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-top: 14px;
+    }
+
+    /* ── Response rate bars ── */
+    .rate-bar-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 50px;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.76rem;
+      margin-bottom: 8px;
+    }
+    .rate-bar-label { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rate-bar-track { background: var(--surface3); border-radius: 3px; height: 14px; overflow: hidden; }
+    .rate-bar-fill  { height: 100%; border-radius: 3px; }
+    .rate-bar-val   { color: var(--muted); font-size: 0.7rem; text-align: right; }
+
+    /* ── View toggle ── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .empty-row td { text-align: center; color: var(--muted); padding: 36px; font-style: italic; }
+  </style>
+</head>
+<body>
+
+<div class="back">
+  <a href="portfolio.html">← back to portfolio</a>
+</div>
+
+<div class="container">
+  <div class="page-header">
+    <h1>Job Application Tracker</h1>
+    <div class="divider"></div>
+    <p>Gmail-Integrated Analytics Dashboard · Python · Dash · MySQL</p>
+    <div class="demo-badge">Interactive Demo</div>
+  </div>
+
+  <div class="app-nav">
+    <button class="active" onclick="showView('dashboard', this)">Dashboard</button>
+    <button onclick="showView('applications', this)">Applications</button>
+    <button onclick="showView('weekly', this)">Weekly Trends</button>
+    <button onclick="showView('monitor', this)">Gmail Monitor</button>
+  </div>
+
+  <!-- ══════════════════════════════════════ DASHBOARD ══ -->
+  <div id="view-dashboard" class="view active">
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="s-label">Total Applications</div>
+        <div class="s-value" id="stat-total">—</div>
+        <div class="s-sub">Mar – Apr 2026</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Received</div>
+        <div class="s-value" style="color:var(--c-received)" id="stat-received">—</div>
+        <div class="s-sub">awaiting response</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Rejected</div>
+        <div class="s-value" style="color:var(--c-rejected)" id="stat-rejected">—</div>
+        <div class="s-sub" id="sub-rej-rate">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Interview / Next</div>
+        <div class="s-value" style="color:var(--c-interview)" id="stat-interview">—</div>
+        <div class="s-sub">moved forward</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Offers</div>
+        <div class="s-value" style="color:var(--c-offer)" id="stat-offer">—</div>
+        <div class="s-sub">in hand</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Response Rate</div>
+        <div class="s-value" style="color:var(--accent)" id="stat-rate">—</div>
+        <div class="s-sub">interview + offer</div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <!-- Donut -->
+      <div class="chart-card">
+        <h3>Status Breakdown</h3>
+        <div class="donut-wrap">
+          <canvas id="donut-canvas" width="120" height="120" style="border-radius:50%"></canvas>
+          <div class="donut-legend" id="donut-legend"></div>
+        </div>
+      </div>
+
+      <!-- Top companies -->
+      <div class="chart-card">
+        <h3>Applications by Company</h3>
+        <div class="bar-chart" id="company-bars"></div>
+      </div>
+    </div>
+
+    <!-- Response rate chart -->
+    <div class="chart-card" style="margin-bottom:0">
+      <h3>Response Rate by Company <span style="color:var(--muted);font-size:0.65rem;letter-spacing:0">(interview + offer / total)</span></h3>
+      <div style="margin-top:4px" id="rate-bars"></div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════ APPLICATIONS ══ -->
+  <div id="view-applications" class="view">
+
+    <div class="filters">
+      <label>Status
+        <select id="filter-status" onchange="renderTable()">
+          <option value="">All</option>
+          <option>Application Received</option>
+          <option>Rejected</option>
+          <option>Incomplete / Started</option>
+          <option>Interview / Next Steps</option>
+          <option>Offer</option>
+        </select>
+      </label>
+      <label>Company
+        <input id="filter-company" type="text" placeholder="Search…" oninput="renderTable()">
+      </label>
+      <label>Role
+        <input id="filter-role" type="text" placeholder="Search…" oninput="renderTable()">
+      </label>
+      <label>Sort by
+        <select id="filter-sort" onchange="renderTable()">
+          <option value="date_desc">Date ↓</option>
+          <option value="date_asc">Date ↑</option>
+          <option value="company">Company</option>
+          <option value="status">Status</option>
+        </select>
+      </label>
+      <button class="reset-btn" onclick="resetFilters()">Reset</button>
+    </div>
+
+    <div class="summary-bar">
+      <span id="table-summary">Showing all applications</span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date Applied</th>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="apps-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ WEEKLY ══ -->
+  <div id="view-weekly" class="view">
+    <div class="chart-card" style="margin-bottom:14px">
+      <h3>Weekly Application Volume</h3>
+      <div id="weekly-chart" style="margin-top:8px"></div>
+    </div>
+    <div class="chart-card">
+      <h3>Weekly Status Summary</h3>
+      <div class="weekly-grid" id="weekly-summary"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ MONITOR ══ -->
+  <div id="view-monitor" class="view">
+
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat-card">
+        <div class="s-label">Emails Parsed</div>
+        <div class="s-value" style="color:var(--accent)">247</div>
+        <div class="s-sub">since Mar 1</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Auto-Classified</div>
+        <div class="s-value" style="color:var(--c-interview)">231</div>
+        <div class="s-sub">93.5% match rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Unmatched</div>
+        <div class="s-value" style="color:var(--c-pending)">16</div>
+        <div class="s-sub">review queue</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Last Poll</div>
+        <div class="s-value" style="font-size:1.1rem;color:var(--bright)">4m ago</div>
+        <div class="s-sub">interval: 5 min</div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:14px">
+      <div class="monitor-header">
+        <div class="pulse"></div>
+        <span class="monitor-status">Monitor Active — polling Gmail API</span>
+      </div>
+      <div class="monitor-log" id="monitor-log"></div>
+    </div>
+
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ── Sample data ──────────────────────────────────────────────────────────────
+const APPS = [
+  { date:'2026-04-15', company:'Cloudflare',        role:'Platform Engineer',                     status:'Interview / Next Steps', notes:'Phone screen scheduled Apr 18' },
+  { date:'2026-04-14', company:'Datadog',            role:'Security Engineer – Application',       status:'Application Received',   notes:'' },
+  { date:'2026-04-14', company:'HashiCorp',          role:'Backend Software Engineer',             status:'Application Received',   notes:'' },
+  { date:'2026-04-13', company:'Tailscale',          role:'Backend Engineer (Go/Python)',           status:'Application Received',   notes:'' },
+  { date:'2026-04-12', company:'Grafana Labs',       role:'Software Engineer – Backend',           status:'Application Received',   notes:'' },
+  { date:'2026-04-11', company:'Render',             role:'Platform Engineer – Infrastructure',    status:'Rejected',               notes:'Auto-rejection email Apr 13' },
+  { date:'2026-04-11', company:'Vercel',             role:'Edge Infrastructure Engineer',          status:'Application Received',   notes:'' },
+  { date:'2026-04-10', company:'Temporal',           role:'Developer Experience Engineer',         status:'Application Received',   notes:'' },
+  { date:'2026-04-10', company:'Neon Tech',          role:'Backend Developer – Postgres',          status:'Rejected',               notes:'Position filled internally' },
+  { date:'2026-04-09', company:'NordSecurity',       role:'DevOps Engineer (Saily)',               status:'Interview / Next Steps', notes:'Technical interview Apr 17' },
+  { date:'2026-04-08', company:'Rebuy Inc.',         role:'Sr Software Engineer – Backend',        status:'Application Received',   notes:'' },
+  { date:'2026-04-07', company:'Supabase',           role:'Backend Engineer – Realtime',           status:'Rejected',               notes:'' },
+  { date:'2026-04-07', company:'1Password',          role:'DevSecOps Engineer',                    status:'Application Received',   notes:'' },
+  { date:'2026-04-06', company:'PlanetScale',        role:'Cloud Security Engineer',               status:'Application Received',   notes:'' },
+  { date:'2026-04-05', company:'Fly.io',             role:'Infrastructure Engineer',               status:'Application Received',   notes:'' },
+  { date:'2026-04-04', company:'Stripe',             role:'Infrastructure Security Engineer',      status:'Offer',                  notes:'Offer received Apr 15 — reviewing' },
+  { date:'2026-04-03', company:'Wiz',                role:'Cloud Security Engineer',               status:'Interview / Next Steps', notes:'Final round Apr 19' },
+  { date:'2026-04-02', company:'Turso',              role:'Software Engineer – Distributed DB',    status:'Rejected',               notes:'' },
+  { date:'2026-04-01', company:'US Dept of Defense', role:'DevSecOps Engineer – GS-13',           status:'Incomplete / Started',   notes:'USAJobs form — finishing SF-86 section' },
+  { date:'2026-03-31', company:'Buf Technologies',   role:'Backend Engineer – API Platform',       status:'Rejected',               notes:'' },
+  { date:'2026-03-28', company:'Astro',              role:'Developer Advocate / Engineer',         status:'Rejected',               notes:'' },
+  { date:'2026-03-27', company:'Snowflake',          role:'Security Software Engineer',            status:'Rejected',               notes:'Rejection email Mar 30' },
+  { date:'2026-03-26', company:'MongoDB',            role:'Platform Engineer',                     status:'Application Received',   notes:'' },
+  { date:'2026-03-25', company:'Elastic',            role:'Site Reliability Engineer',             status:'Interview / Next Steps', notes:'Onsite scheduled Apr 10' },
+  { date:'2026-03-24', company:'Twilio',             role:'Security Engineer',                     status:'Rejected',               notes:'' },
+  { date:'2026-03-22', company:'Fastly',             role:'Infrastructure Engineer',               status:'Application Received',   notes:'' },
+  { date:'2026-03-21', company:'GitHub',             role:'DevSecOps Engineer',                    status:'Application Received',   notes:'' },
+  { date:'2026-03-20', company:'Netlify',            role:'Backend Engineer',                      status:'Rejected',               notes:'' },
+  { date:'2026-03-19', company:'Crowdstrike',        role:'Cloud Security Engineer',               status:'Interview / Next Steps', notes:'Recruiter screen complete' },
+  { date:'2026-03-18', company:'Palo Alto Networks', role:'Software Engineer – Security',          status:'Application Received',   notes:'' },
+  { date:'2026-03-17', company:'Lacework',           role:'Platform Engineer',                     status:'Rejected',               notes:'' },
+  { date:'2026-03-15', company:'Snyk',               role:'Backend Software Engineer',             status:'Application Received',   notes:'' },
+  { date:'2026-03-14', company:'Orca Security',      role:'Cloud Security Engineer',               status:'Rejected',               notes:'' },
+  { date:'2026-03-13', company:'Bridgecrew',         role:'DevSecOps Engineer',                    status:'Application Received',   notes:'' },
+  { date:'2026-03-12', company:'Aqua Security',      role:'Platform Security Engineer',            status:'Rejected',               notes:'' },
+  { date:'2026-03-11', company:'Sysdig',             role:'Cloud Security Engineer',               status:'Application Received',   notes:'' },
+  { date:'2026-03-10', company:'Lacework',           role:'Security Platform Engineer',            status:'Rejected',               notes:'Duplicate outreach — marked closed' },
+  { date:'2026-03-08', company:'JupiterOne',         role:'Cloud Security Engineer',               status:'Application Received',   notes:'' },
+  { date:'2026-03-07', company:'Accurics',           role:'DevSecOps Engineer',                    status:'Rejected',               notes:'' },
+  { date:'2026-03-05', company:'Tines',              role:'Security Automation Engineer',          status:'Application Received',   notes:'' },
+];
+
+// ── Status config ────────────────────────────────────────────────────────────
+const STATUS_CSS = {
+  'Application Received':   's-received',
+  'Rejected':               's-rejected',
+  'Incomplete / Started':   's-pending',
+  'Interview / Next Steps': 's-interview',
+  'Offer':                  's-offer',
+};
+
+const STATUS_COLOR = {
+  'Application Received':   '#4c9be8',
+  'Rejected':               '#e84c4c',
+  'Incomplete / Started':   '#e8a84c',
+  'Interview / Next Steps': '#00cc6a',
+  'Offer':                  '#b44ce8',
+};
+
+// ── Stats ────────────────────────────────────────────────────────────────────
+function buildStats() {
+  const total     = APPS.length;
+  const received  = APPS.filter(a => a.status === 'Application Received').length;
+  const rejected  = APPS.filter(a => a.status === 'Rejected').length;
+  const interview = APPS.filter(a => a.status === 'Interview / Next Steps').length;
+  const offer     = APPS.filter(a => a.status === 'Offer').length;
+  const rate      = Math.round((interview + offer) / total * 100) + '%';
+
+  document.getElementById('stat-total').textContent     = total;
+  document.getElementById('stat-received').textContent  = received;
+  document.getElementById('stat-rejected').textContent  = rejected;
+  document.getElementById('stat-interview').textContent = interview;
+  document.getElementById('stat-offer').textContent     = offer;
+  document.getElementById('stat-rate').textContent      = rate;
+  document.getElementById('sub-rej-rate').textContent   = Math.round(rejected/total*100) + '% rejection rate';
+}
+
+// ── Donut chart (canvas) ─────────────────────────────────────────────────────
+function buildDonut() {
+  const counts = {};
+  APPS.forEach(a => { counts[a.status] = (counts[a.status] || 0) + 1; });
+  const total = APPS.length;
+  const canvas = document.getElementById('donut-canvas');
+  const ctx = canvas.getContext('2d');
+  const cx = 60, cy = 60, R = 50, r = 32;
+
+  ctx.clearRect(0, 0, 120, 120);
+  let angle = -Math.PI / 2;
+
+  const order = ['Application Received','Interview / Next Steps','Offer','Incomplete / Started','Rejected'];
+  const legend = document.getElementById('donut-legend');
+  legend.innerHTML = '';
+
+  order.forEach(status => {
+    const count = counts[status] || 0;
+    if (!count) return;
+    const slice = (count / total) * 2 * Math.PI;
+    const color = STATUS_COLOR[status];
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, R, angle, angle + slice);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    angle += slice;
+
+    const short = {
+      'Application Received':   'Received',
+      'Rejected':               'Rejected',
+      'Incomplete / Started':   'Pending',
+      'Interview / Next Steps': 'Interview',
+      'Offer':                  'Offer',
+    }[status];
+
+    legend.innerHTML += `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${color}"></div>
+        <span class="legend-label">${short}</span>
+        <span class="legend-count">${count}</span>
+      </div>`;
+  });
+
+  // Punch hole
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+  ctx.fillStyle = '#141414';
+  ctx.fill();
+
+  // Center label
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 18px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(total, cx, cy - 6);
+  ctx.fillStyle = '#555';
+  ctx.font = '9px JetBrains Mono, monospace';
+  ctx.fillText('TOTAL', cx, cy + 9);
+}
+
+// ── Company bar chart ─────────────────────────────────────────────────────────
+function buildCompanyBars() {
+  const counts = {};
+  APPS.forEach(a => { counts[a.company] = (counts[a.company] || 0) + 1; });
+
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 10);
+  const max = sorted[0][1];
+
+  document.getElementById('company-bars').innerHTML = sorted.map(([co, n]) => `
+    <div class="bar-row">
+      <span class="bar-label" title="${esc(co)}">${esc(co.length > 12 ? co.slice(0,12)+'…' : co)}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${Math.round(n/max*100)}%"></div>
+      </div>
+      <span class="bar-val">${n}</span>
+    </div>
+  `).join('');
+}
+
+// ── Response rate bars ────────────────────────────────────────────────────────
+function buildRateBars() {
+  const co = {};
+  APPS.forEach(a => {
+    if (!co[a.company]) co[a.company] = { total:0, hits:0 };
+    co[a.company].total++;
+    if (a.status === 'Interview / Next Steps' || a.status === 'Offer') co[a.company].hits++;
+  });
+
+  const qualified = Object.entries(co)
+    .filter(([,v]) => v.total >= 2 && v.hits > 0)
+    .map(([name, v]) => ({ name, rate: v.hits / v.total, hits: v.hits, total: v.total }))
+    .sort((a,b) => b.rate - a.rate)
+    .slice(0, 8);
+
+  document.getElementById('rate-bars').innerHTML = qualified.map(item => {
+    const pct = Math.round(item.rate * 100);
+    const color = pct >= 50 ? '#00cc6a' : pct >= 25 ? '#e8a84c' : '#e84c4c';
+    return `
+      <div class="rate-bar-row">
+        <span class="rate-bar-label" title="${esc(item.name)}">${esc(item.name)}</span>
+        <div class="rate-bar-track">
+          <div class="rate-bar-fill" style="width:${pct}%;background:${color}"></div>
+        </div>
+        <span class="rate-bar-val">${pct}%</span>
+      </div>`;
+  }).join('') || '<div style="color:var(--muted);font-size:0.78rem">Not enough multi-application data yet.</div>';
+}
+
+// ── Applications table ────────────────────────────────────────────────────────
+function renderTable() {
+  const statusF  = document.getElementById('filter-status').value;
+  const companyF = document.getElementById('filter-company').value.toLowerCase();
+  const roleF    = document.getElementById('filter-role').value.toLowerCase();
+  const sortF    = document.getElementById('filter-sort').value;
+
+  let apps = APPS.filter(a => {
+    if (statusF  && a.status  !== statusF)                   return false;
+    if (companyF && !a.company.toLowerCase().includes(companyF)) return false;
+    if (roleF    && !a.role.toLowerCase().includes(roleF))       return false;
+    return true;
+  });
+
+  apps = [...apps].sort((a,b) => {
+    if (sortF === 'date_asc')  return a.date.localeCompare(b.date);
+    if (sortF === 'date_desc') return b.date.localeCompare(a.date);
+    if (sortF === 'company')   return a.company.localeCompare(b.company);
+    if (sortF === 'status')    return a.status.localeCompare(b.status);
+    return 0;
+  });
+
+  const tbody = document.getElementById('apps-tbody');
+  if (!apps.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No applications matched the filters.</td></tr>';
+  } else {
+    tbody.innerHTML = apps.map(a => `
+      <tr>
+        <td class="date-text">${a.date}</td>
+        <td class="company-text">${esc(a.company)}</td>
+        <td class="role-text">${esc(a.role)}</td>
+        <td><span class="status-badge ${STATUS_CSS[a.status]}">${esc(a.status)}</span></td>
+        <td class="notes-text" title="${esc(a.notes)}">${esc(a.notes) || '—'}</td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('table-summary').textContent =
+    `Showing ${apps.length} of ${APPS.length} application${APPS.length !== 1 ? 's' : ''}`;
+}
+
+function resetFilters() {
+  document.getElementById('filter-status').value  = '';
+  document.getElementById('filter-company').value = '';
+  document.getElementById('filter-role').value    = '';
+  document.getElementById('filter-sort').value    = 'date_desc';
+  renderTable();
+}
+
+// ── Weekly view ───────────────────────────────────────────────────────────────
+function buildWeekly() {
+  const weeks = {};
+  APPS.forEach(a => {
+    const d = new Date(a.date);
+    const sun = new Date(d);
+    sun.setDate(d.getDate() - d.getDay());
+    const key = sun.toISOString().slice(0,10);
+    if (!weeks[key]) weeks[key] = { total:0, received:0, rejected:0, interview:0, offer:0, pending:0 };
+    weeks[key].total++;
+    if (a.status === 'Application Received')   weeks[key].received++;
+    if (a.status === 'Rejected')               weeks[key].rejected++;
+    if (a.status === 'Interview / Next Steps') weeks[key].interview++;
+    if (a.status === 'Offer')                  weeks[key].offer++;
+    if (a.status === 'Incomplete / Started')   weeks[key].pending++;
+  });
+
+  const sorted = Object.entries(weeks).sort((a,b) => b[0].localeCompare(a[0]));
+  const maxTotal = Math.max(...sorted.map(([,v]) => v.total));
+
+  // Volume bars
+  const volBars = sorted.map(([wk, v]) => {
+    const pct = Math.round(v.total / maxTotal * 100);
+    const label = 'wk of ' + wk.slice(5);
+    return `
+      <div class="bar-row" style="grid-template-columns:80px 1fr 28px">
+        <span class="bar-label" style="font-size:0.68rem">${label}</span>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${pct}%;background:var(--accent)"></div>
+        </div>
+        <span class="bar-val">${v.total}</span>
+      </div>`;
+  }).join('');
+
+  document.getElementById('weekly-chart').innerHTML = `<div class="bar-chart">${volBars}</div>`;
+
+  // Status summary
+  document.getElementById('weekly-summary').innerHTML = sorted.map(([wk, v]) => {
+    const cols = [
+      { label:'Recv',      val: v.received,  color: '#4c9be8' },
+      { label:'Reject',    val: v.rejected,  color: '#e84c4c' },
+      { label:'Interview', val: v.interview, color: '#00cc6a' },
+      { label:'Offer',     val: v.offer,     color: '#b44ce8' },
+      { label:'Pending',   val: v.pending,   color: '#e8a84c' },
+    ];
+    const maxVal = Math.max(...cols.map(c => c.val), 1);
+    return `
+      <div class="week-row">
+        <div class="week-header">
+          <span class="week-label">Week of ${wk}</span>
+          <span class="week-total">${v.total} application${v.total !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="week-bars">
+          ${cols.map(c => `
+            <div class="week-bar-col">
+              <div class="week-bar" style="height:${Math.max(4, Math.round(c.val/maxVal*40))}px;background:${c.color};opacity:${c.val ? 1 : 0.15}"></div>
+              <span class="week-bar-label">${c.val}</span>
+            </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px">
+          ${cols.map(c => `<span style="font-size:0.6rem;color:${c.color};letter-spacing:0.5px">${c.label}</span>`).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── Gmail monitor log ─────────────────────────────────────────────────────────
+function buildMonitorLog() {
+  const lines = [
+    `<span class="log-dim">[2026-04-15 14:32:01] Gmail monitor starting up…</span>`,
+    `<span class="log-dim">[2026-04-15 14:32:01] OAuth2 token loaded — scope: gmail.readonly</span>`,
+    `<span class="log-dim">[2026-04-15 14:32:01] Poll interval: 300s | Label filter: INBOX</span>`,
+    ``,
+    `<span class="log-dim">[2026-04-15 14:32:02] === Poll #1 ===</span>`,
+    `[14:32:02] <span class="log-info">Fetching messages since 2026-04-15T14:27:01…</span>`,
+    `[14:32:02] Found <span class="log-green">3</span> new messages`,
+    `[14:32:02] Parsing: <span style="color:#e2e8f0">"Your application to Datadog has been received"</span>`,
+    `[14:32:02]   → company=<span class="log-green">Datadog</span>  role=<span class="log-green">Security Engineer – Application</span>  status=<span style="color:#4c9be8">Application Received</span>`,
+    `[14:32:02] Parsing: <span style="color:#e2e8f0">"Update on your Render application"</span>`,
+    `[14:32:02]   → company=<span class="log-green">Render</span>  role=<span class="log-green">Platform Engineer – Infrastructure</span>  status=<span style="color:#e84c4c">Rejected</span>`,
+    `[14:32:02] Parsing: <span style="color:#e2e8f0">"Stripe – Next steps for your application"</span>`,
+    `[14:32:02]   → company=<span class="log-green">Stripe</span>  role=<span class="log-green">Infrastructure Security Engineer</span>  status=<span style="color:#00cc6a">Interview / Next Steps</span>`,
+    `[14:32:02] <span class="log-green">Committed 3 status updates to DB</span>`,
+    ``,
+    `<span class="log-dim">[2026-04-15 14:37:02] === Poll #2 ===</span>`,
+    `[14:37:02] <span class="log-info">Fetching messages since 2026-04-15T14:32:02…</span>`,
+    `[14:37:02] Found <span class="log-green">1</span> new message`,
+    `[14:37:02] Parsing: <span style="color:#e2e8f0">"Congratulations! Offer from Stripe"</span>`,
+    `[14:37:02]   → company=<span class="log-green">Stripe</span>  role=<span class="log-green">Infrastructure Security Engineer</span>  status=<span style="color:#b44ce8">Offer</span>`,
+    `[14:37:02] <span class="log-green">Committed 1 status update to DB</span>`,
+    ``,
+    `<span class="log-dim">[2026-04-15 14:42:02] === Poll #3 ===</span>`,
+    `[14:42:02] <span class="log-info">Fetching messages since 2026-04-15T14:37:02…</span>`,
+    `[14:42:02] Found <span class="log-green">0</span> new messages`,
+    ``,
+    `<span class="log-dim">[2026-04-15 14:47:02] === Poll #4 ===</span>`,
+    `[14:47:02] <span class="log-info">Fetching messages since 2026-04-15T14:42:02…</span>`,
+    `[14:47:02] Found <span class="log-green">2</span> new messages`,
+    `[14:47:02] Parsing: <span style="color:#e2e8f0">"We reviewed your application — HashiCorp"</span>`,
+    `[14:47:02]   → company=<span class="log-green">HashiCorp</span>  role=<span class="log-green">Backend Software Engineer</span>  status=<span style="color:#4c9be8">Application Received</span>`,
+    `[14:47:02] Parsing: <span style="color:#e2e8f0">"Thank you for applying to Temporal"</span>`,
+    `[14:47:02]   → regex match: <span class="log-dim">"thank you for applying"</span> → Application Received`,
+    `[14:47:02]   → company=<span class="log-green">Temporal</span>  role=<span class="log-green">Developer Experience Engineer</span>  status=<span style="color:#4c9be8">Application Received</span>`,
+    `[14:47:02] <span class="log-green">Committed 2 status updates to DB</span>`,
+    ``,
+    `<span class="log-dim">[2026-04-15 14:52:02] === Poll #5 ===</span>`,
+    `[14:52:02] <span class="log-info">Fetching messages since 2026-04-15T14:47:02…</span>`,
+    `[14:52:02] Found <span class="log-green">1</span> new message`,
+    `[14:52:02] Parsing: <span style="color:#e2e8f0">"Fwd: RE: FW: Heads up on your Turso app"</span>`,
+    `[14:52:02]   <span class="log-warn">⚠ no regex match — queued for manual review</span>`,
+    `[14:52:02] Unmatched queue: <span class="log-warn">1 item</span>`,
+    ``,
+    `<span class="log-dim">[2026-04-15 14:57:02] === Poll #6 (latest) ===</span>`,
+    `[14:57:02] <span class="log-info">Fetching messages since 2026-04-15T14:52:02…</span>`,
+    `[14:57:02] Found <span class="log-green">0</span> new messages`,
+    `[14:57:02] <span class="log-dim">Sleeping 300s…</span>`,
+  ];
+  document.getElementById('monitor-log').innerHTML = lines.join('<br>');
+}
+
+// ── View switching ────────────────────────────────────────────────────────────
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.app-nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+buildStats();
+buildDonut();
+buildCompanyBars();
+buildRateBars();
+renderTable();
+buildWeekly();
+buildMonitorLog();
+</script>
+</body>
+</html>

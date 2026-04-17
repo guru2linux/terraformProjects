@@ -1,6 +1,14 @@
 {
   "projects": [
     {
+      "title": "Job Application Tracker — Gmail-Integrated Analytics Dashboard",
+      "description": "Built a full-stack job application tracking system that ingests applications from CSV and live Gmail inbox monitoring, parses email status signals (received, rejected, interview, offer) using regex-based NLP, and stores records in a MySQL backend via SQLAlchemy. Implemented a real-time Plotly Dash dashboard with status breakdowns, weekly application volume trends, company-level response rate analysis, and a searchable/filterable data table. The Gmail monitor polls the inbox on a configurable interval, parses each email through a multi-stage transform pipeline, and auto-classifies application status — keeping the database current without manual entry.",
+      "role": "Sole Architect & Engineer",
+      "tools": ["Python", "Dash", "Plotly", "Pandas", "SQLAlchemy", "MySQL", "Gmail API", "Google OAuth2", "scikit-learn", "Jupyter"],
+      "outcome": "End-to-end pipeline from inbox to insight — Gmail emails are auto-parsed and status-classified, CSV bulk imports are deduplicated on ingest, and the live dashboard surfaces response rates, rejection trends, and weekly cadence at a glance.",
+      "link": "job-application-tracker-demo.html"
+    },
+    {
       "title": "Job Copilot — AI-Powered Job Intelligence & Auto-Application Platform",
       "description": "Built a full-stack job intelligence platform that collects, deduplicates, scores, and analyzes job postings from multiple sources (Greenhouse, Lever, Remotive, RemoteJobs.io, USAJobs). The platform generates tailored resumes and cover letters per job using Claude Sonnet, with experience bullets grouped by role, scored for relevance against job requirements, and rewritten to be impact-first. Implemented a Playwright-based automated application engine that fills and submits Greenhouse and Lever application forms — including custom question handling via Claude — with CAPTCHA detection, screenshot audit trails, and per-attempt status tracking. Deployed as a Dockerized FastAPI app with a Jinja2 UI, SQLAlchemy ORM, MySQL backend, and Alembic migrations.",
       "role": "Sole Architect & Engineer",
