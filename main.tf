@@ -55,6 +55,14 @@ resource "google_storage_bucket_object" "job_copilot_demo" {
   content_type = "text/html"
 }
 
+# Upload the Job Application Tracker demo page
+resource "google_storage_bucket_object" "job_application_tracker_demo" {
+  name         = "job-application-tracker-demo.html"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/job-application-tracker-demo.html"
+  content_type = "text/html"
+}
+
 # CompTIA stackable certification logos
 resource "google_storage_bucket_object" "cert_cnsp" {
   name         = "certs/CNSP_Certified-1.png"
