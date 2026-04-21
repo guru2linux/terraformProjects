@@ -99,6 +99,14 @@ resource "google_storage_bucket_object" "cert_csis" {
   content_type = "image/png"
 }
 
+# Profile Image
+resource "google_storage_bucket_object" "profile_img" {
+  name         = "imgs/IMG_2906.PNG"
+  bucket       = google_storage_bucket.website.name
+  source       = "${path.module}/website/imgs/IMG_2906.PNG"
+  content_type = "image/png"
+}
+
 # Bucket is intentionally public — serves static website content via CDN/load balancer
 resource "google_storage_bucket_iam_member" "public_read" {
   bucket = google_storage_bucket.website.name
