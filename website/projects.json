@@ -1,6 +1,14 @@
 {
   "projects": [
     {
+      "title": "Wazuh Home Lab SIEM — Full-Stack Security Monitoring & Detection Platform",
+      "description": "Deployed a production-grade SIEM/XDR platform on Ubuntu 22.04 using Wazuh v4.14.5, standing up the full Wazuh stack (Manager, Indexer, Dashboard) and enrolling multiple monitored endpoints including a Fedora Linux workstation. Configured File Integrity Monitoring (FIM) across critical system paths (/etc, /bin, /sbin, /boot), Security Configuration Assessment (SCA), vulnerability detection with hourly CVE feed updates, rootcheck for rootkit and trojan detection, and active response — automating firewall-drop blocks on SSH brute-force triggers (rule 5712, 30-minute ban). Built a custom Python Discord integration that parses Wazuh alert JSON and fires formatted real-time notifications (severity, source host, rule description) to a private security channel. Extended the ruleset with custom detection rules: a Level 12 canary file trap using Linux auditd to detect any unauthorized access to AWS credentials, and application-layer monitoring rules for a live trading agent's error and auth failure events. Integrated GCP Pub/Sub to ingest cloud logs from the gorillac-site GCP project directly into the SIEM pipeline.",
+      "role": "Security Engineer / Homelab Architect",
+      "tools": ["Wazuh v4.14.5", "Ubuntu 22.04", "Wazuh Indexer", "Wazuh Dashboard", "Linux auditd", "FIM", "SCA", "Vulnerability Detection", "Active Response", "Rootcheck", "GCP Pub/Sub", "Discord Webhooks", "Python", "Filebeat", "Custom SIEM Rules"],
+      "outcome": "Multi-endpoint SIEM with real-time Discord alerting, a canary-based AWS credential access trap, GCP cloud log ingestion, automated firewall active response, and custom application-layer detection rules — demonstrating end-to-end threat detection from rule authoring through real-time alert delivery.",
+      "link": ""
+    },
+    {
       "title": "Job Application Tracker — Gmail-Integrated Analytics Dashboard",
       "description": "Built a full-stack job application tracking system that ingests applications from CSV and live Gmail inbox monitoring, parses email status signals (received, rejected, interview, offer) using regex-based NLP, and stores records in a MySQL backend via SQLAlchemy. Implemented a real-time Plotly Dash dashboard with status breakdowns, weekly application volume trends, company-level response rate analysis, and a searchable/filterable data table. The Gmail monitor polls the inbox on a configurable interval, parses each email through a multi-stage transform pipeline, and auto-classifies application status — keeping the database current without manual entry.",
       "role": "Sole Architect & Engineer",
