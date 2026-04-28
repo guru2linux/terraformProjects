@@ -17,11 +17,11 @@
       "link": "job-application-tracker-demo.html"
     },
     {
-      "title": "Job Copilot — AI-Powered Job Intelligence & Auto-Application Platform",
-      "description": "Built a full-stack job intelligence platform that collects, deduplicates, scores, and analyzes job postings from multiple sources (Greenhouse, Lever, Remotive, RemoteJobs.io, USAJobs). The platform generates tailored resumes and cover letters per job using Claude Sonnet, with experience bullets grouped by role, scored for relevance against job requirements, and rewritten to be impact-first. Implemented a Playwright-based automated application engine that fills and submits Greenhouse and Lever application forms — including custom question handling via Claude — with CAPTCHA detection, screenshot audit trails, and per-attempt status tracking. Deployed as a Dockerized FastAPI app with a Jinja2 UI, SQLAlchemy ORM, MySQL backend, and Alembic migrations.",
+      "title": "Job Copilot — AI-Powered Job Search, Scoring Platform",
+      "description": "Built a full-stack job intelligence platform that leverages AI to search for, score, and list job postings from multiple sources (Greenhouse, Lever, Remotive, RemoteJobs.io, USAJobs). The platform uses AI to score experience for relevance against requirements. Implemented a Playwright-based automated application engine that fills and submits Greenhouse and Lever application forms — including custom question handling via Claude — with CAPTCHA detection, screenshot audit trails, and per-attempt status tracking. Deployed as a Dockerized FastAPI app with a Jinja2 UI, SQLAlchemy ORM, MySQL backend, and Alembic migrations.",
       "role": "Sole Architect & Engineer",
       "tools": ["Python", "FastAPI", "Playwright", "SQLAlchemy", "MySQL", "Alembic", "Claude API (Anthropic)", "Docker", "Jinja2", "Markdown"],
-      "outcome": "End-to-end pipeline from job discovery to automated submission — one button fires a tailored resume, cover letter, and a Playwright-driven application against real job boards. Claude handles custom form questions, screenshots capture every submission for audit, and job status updates automatically on success.",
+      "outcome": "AI-driven pipeline that searches, scores, and lists high-fit jobs. Claude handles custom form questions, while the platform maintains a live list of scored opportunities with audit trails for every submission.",
       "link": "job-copilot-demo.html"
     },
     {
